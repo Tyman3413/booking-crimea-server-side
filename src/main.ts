@@ -45,8 +45,9 @@ async function bootstrap() {
       'API документация для сервиса онлайн-бронирования отелей «Booking Crimea»',
     )
     .setVersion('1.0')
-    .addTag('Администрирование', 'Операции администрирования')
-    .setContact('Виктор', 'https://t.me/Tyman3413', 'tyman3413@gmail.com')
+    .addTag('Администрирование 🔒', 'Операции администрирования')
+    .setContact('Виктор', 'https://t.me/VictorFedin', 'tyman3413@gmail.com')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions);

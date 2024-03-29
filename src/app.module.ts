@@ -9,6 +9,7 @@ import { ConveniencesModule } from './modules/conveniences/conveniences.module';
 import { HotelsModule } from './modules/hotels/hotels.module';
 import { UsersModule } from './modules/users/users.module';
 import { LandlordsModule } from './modules/landlords/landlords.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LandlordsModule } from './modules/landlords/landlords.module';
       inject: [ConfigService],
     }),
     /* App */
+    AuthModule,
     CountriesModule,
     StatesModule,
     CitiesModule,

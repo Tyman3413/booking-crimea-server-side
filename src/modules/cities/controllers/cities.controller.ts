@@ -1,13 +1,22 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { CitiesService } from '../services/cities.service';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CitiesResult } from '../dto/cities.result';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('cities')
+@UseGuards(AuthGuard('jwt'))
 export class CitiesController {
   constructor(private readonly citiesService: CitiesService) {}
 
-  @ApiTags('Города')
+  @ApiBearerAuth()
+  @ApiTags('Города 🏢')
   @ApiOperation({
     summary: 'Получить список популярных городов',
   })

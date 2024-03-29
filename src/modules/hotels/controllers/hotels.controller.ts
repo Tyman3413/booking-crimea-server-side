@@ -7,7 +7,7 @@ import { HotelListResult } from '../dto/hotel.list.result';
 export class HotelsController {
   constructor(private readonly hotelsService: HotelsService) {}
 
-  @ApiTags('Отели')
+  @ApiTags('Отели 🏨')
   @ApiOperation({
     summary:
       'Получить полный список отелей или список отелей конкретного гоорода',
