@@ -24,4 +24,8 @@ export class CategoriesService {
 
     return !!category;
   }
+
+  async getAll(): Promise<Category[]> {
+    return this.repository.find();
+  }
 }
