@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Country } from '../countries/country.entity';
-import { City } from '../cities/entities/city.entity';
+import { City } from '../cities/city.entity';
 import { User } from '../users/user.entity';
 import { Landlord } from '../landlords/entities/landlord.entity';
 
@@ -19,6 +19,9 @@ export class State extends BaseEntity {
 
   @Column({ length: 100, nullable: true })
   name: string;
+
+  @Column({ length: 100, nullable: true })
+  englishName: string;
 
   @Column({ nullable: true })
   countryId: number;

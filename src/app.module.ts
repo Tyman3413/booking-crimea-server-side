@@ -10,6 +10,13 @@ import { HotelsModule } from './modules/hotels/hotels.module';
 import { UsersModule } from './modules/users/users.module';
 import { LandlordsModule } from './modules/landlords/landlords.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { DatabaseModule } from './modules/database/database.module';
+import { HabitationsModule } from './modules/habitations/habitations.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { RegistrationsModule } from './modules/registrations/registrations.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
+import { TermsModule } from './modules/terms/terms.module';
 
 @Module({
   imports: [
@@ -35,14 +42,21 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     /* App */
     AuthModule,
-    CountriesModule,
-    StatesModule,
+    CategoriesModule,
     CitiesModule,
-    UsersModule,
-    LandlordsModule,
-    HotelsModule,
     ConveniencesModule,
+    CountriesModule,
+    DatabaseModule,
+    HabitationsModule,
+    HotelsModule,
+    LandlordsModule,
+    OrdersModule,
+    RegistrationsModule,
+    ReviewsModule,
     RoomsModule,
+    StatesModule,
+    TermsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

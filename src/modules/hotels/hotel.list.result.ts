@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Convenience } from '../../conveniences/convenience.entity';
+import { Convenience } from '../conveniences/convenience.entity';
 
 export class HotelListResult {
   @ApiProperty({ example: 'Ялта-Интурист' })

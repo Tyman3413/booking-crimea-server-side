@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Hotel } from '../entities/hotel.entity';
+import { Hotel } from './hotel.entity';
 import { Repository } from 'typeorm';
-import { HotelListResult } from '../dto/hotel.list.result';
+import { HotelListResult } from './hotel.list.result';
 
 @Injectable()
 export class HotelsService {

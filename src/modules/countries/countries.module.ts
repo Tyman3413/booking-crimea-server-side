@@ -8,6 +8,6 @@ import { CountriesController } from './countries.controller';
   imports: [TypeOrmModule.forFeature([Country])],
   controllers: [CountriesController],
   providers: [CountriesService],
-  exports: [],
+  exports: [CountriesService],
 })
 export class CountriesModule {}

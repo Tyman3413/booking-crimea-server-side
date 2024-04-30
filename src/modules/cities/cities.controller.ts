@@ -1,24 +1,15 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { CitiesService } from '../services/cities.service';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { CitiesResult } from '../dto/cities.result';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CitiesService } from './cities.service';
+import { CitiesResult } from './dto/cities.result';
 
 @Controller('cities')
-@UseGuards(AuthGuard('jwt'))
 export class CitiesController {
   constructor(private readonly citiesService: CitiesService) {}
 
-  @ApiBearerAuth()
   @ApiTags('Города 🏢')
   @ApiOperation({
-    summary: 'Получить список популярных городов',
+    summary: 'Получить список популярных направлений',
   })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })

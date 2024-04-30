@@ -7,10 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { State } from '../../states/state.entity';
-import { User } from '../../users/user.entity';
-import { Landlord } from '../../landlords/entities/landlord.entity';
-import { Hotel } from '../../hotels/entities/hotel.entity';
+import { User } from '../users/user.entity';
+import { Landlord } from '../landlords/entities/landlord.entity';
+import { Hotel } from '../hotels/hotel.entity';
+import { State } from '../states/state.entity';
 
 @Entity('cities')
 export class City extends BaseEntity {
@@ -20,11 +20,8 @@ export class City extends BaseEntity {
   @Column({ length: 100, nullable: true })
   name: string;
 
-  @Column({ nullable: true })
-  latitude: string;
-
-  @Column({ nullable: true })
-  longitude: string;
+  @Column({ length: 100, nullable: true })
+  englishName: string;
 
   @Column({ nullable: true })
   population: number;

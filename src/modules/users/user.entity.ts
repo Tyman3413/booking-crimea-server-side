@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,9 +13,12 @@ import {
 import { FileDetails } from '../filemanager/file.dto';
 import { Country } from '../countries/country.entity';
 import { State } from '../states/state.entity';
-import { City } from '../cities/entities/city.entity';
-import { UserGender } from './user.gender.enum';
 import { Landlord } from '../landlords/entities/landlord.entity';
+import { Review } from '../reviews/review.entity';
+import { Order } from '../orders/order.entity';
+import { City } from '../cities/city.entity';
+import { UserGender } from './enums/user.gender.enum';
+import { UserRole } from './enums/user.role.enum';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -96,6 +100,20 @@ export class User extends BaseEntity {
   @OneToOne(() => Landlord)
   @JoinColumn({ name: 'landlordId' })
   landlord: Landlord;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    nullable: true,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', name: 'last_login' })
   lastLogin: Date;

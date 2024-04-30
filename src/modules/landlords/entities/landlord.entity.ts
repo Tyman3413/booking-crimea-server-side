@@ -10,13 +10,13 @@ import {
 } from 'typeorm';
 import { Country } from '../../countries/country.entity';
 import { State } from '../../states/state.entity';
-import { City } from '../../cities/entities/city.entity';
 import { LandlordType } from '../landlord.type.enum';
 import { LandlordStatus } from '../landlord.status.enum';
 import { User } from '../../users/user.entity';
 import { FileDetails } from '../../filemanager/file.dto';
 import { ContactPerson } from './contact.person.entity';
 import { LandlordSocialLinks } from './landlord.social.links.entity';
+import { City } from '../../cities/city.entity';
 
 @Entity('landlords')
 export class Landlord extends BaseEntity {

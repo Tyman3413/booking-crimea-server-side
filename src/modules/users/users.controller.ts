@@ -16,7 +16,7 @@ export class UsersController {
 
   @Get()
   async get() {
-    return null;
+    return await this.usersService.findAll();
   }
 
   @Put()

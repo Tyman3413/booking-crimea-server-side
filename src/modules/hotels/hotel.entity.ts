@@ -8,10 +8,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { HotelType } from '../enums/hotel.type.enum';
-import { Room } from '../../rooms/room.entity';
-import { Convenience } from '../../conveniences/convenience.entity';
-import { City } from '../../cities/entities/city.entity';
+import { HotelType } from './hotel.type.enum';
+import { Room } from '../rooms/room.entity';
+import { Convenience } from '../conveniences/convenience.entity';
+import { Category } from '../categories/category.entity';
+import { Term } from '../terms/term.entity';
+import { Review } from '../reviews/review.entity';
+import { Order } from '../orders/order.entity';
+import { City } from '../cities/city.entity';
 
 @Entity('hotels')
 export class Hotel extends BaseEntity {
@@ -27,6 +31,9 @@ export class Hotel extends BaseEntity {
   @Column({ nullable: true })
   address: string;
 
+  @ManyToOne(() => Category, (category) => category.hotels)
+  category: Category;
+
   @Column({
     type: 'float',
     name: 'cheapest_price',
@@ -39,11 +46,11 @@ export class Hotel extends BaseEntity {
   @JoinTable()
   conveniences: Convenience[];
 
-  @Column({ nullable: true })
-  placementTerms: string; // TODO new table
+  @ManyToOne(() => Term, (term) => term.hotels)
+  term: Term;
 
-  @Column({ nullable: true })
-  reviews: string; // TODO new table
+  @OneToMany(() => Review, (review) => review.hotel)
+  reviews: Review[];
 
   @Column({ type: 'enum', enum: HotelType, nullable: true })
   type: HotelType;
@@ -57,4 +64,7 @@ export class Hotel extends BaseEntity {
 
   @OneToMany(() => Room, (room) => room.hotel)
   rooms: Room[];
+
+  @OneToMany(() => Order, (order) => order.hotel)
+  orders: Order[];
 }

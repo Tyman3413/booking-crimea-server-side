@@ -17,6 +17,9 @@ export class Country extends BaseEntity {
   @Column({ length: 120, nullable: true })
   name: string;
 
+  @Column({ length: 120, nullable: true })
+  englishName: string;
+
   @Column({ name: 'phone_code', length: 50, nullable: true })
   phoneCode: string;
 
