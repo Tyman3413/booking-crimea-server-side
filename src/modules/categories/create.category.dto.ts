@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { HotelCategories } from './hotel.categories.enum';
 
 export class CreateCategoryDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'Название категории', example: 'Отель' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Тип отеля', enum: HotelCategories })
   type: HotelCategories;
 }
