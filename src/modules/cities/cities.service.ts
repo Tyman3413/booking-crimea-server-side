@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { City } from './city.entity';
 import { CitiesResult } from './dto/cities.result';
+import { HotelsResult } from '../hotels/dto/hotels.result';
 
 @Injectable()
 export class CitiesService {
@@ -28,10 +29,23 @@ export class CitiesService {
       take: limit,
     });
 
-    return cities.map((city) => ({
-      city: city.name,
-      photo: city.photo,
-      totalHotels: city.hotels.length,
-    }));
+    return cities.map((city) => {
+      const hotelsResult: HotelsResult[] = city.hotels.map((hotel) => ({
+        id: hotel.id,
+        img: hotel.image,
+        name: hotel.name,
+        address: hotel.address,
+        cheapestPrice: hotel.cheapestPrice,
+      }));
+
+      return {
+        id: city.id,
+        title: city.name,
+        description: city.description,
+        img: city.photo,
+        totalHotels: city.hotels.length,
+        hotels: hotelsResult,
+      };
+    });
   }
 }
