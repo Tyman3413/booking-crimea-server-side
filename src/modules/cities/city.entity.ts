@@ -23,6 +23,9 @@ export class City extends BaseEntity {
   @Column({ length: 100, nullable: true })
   englishName: string;
 
+  @Column({ length: 512, nullable: true })
+  description: string;
+
   @Column({ nullable: true })
   population: number;
 

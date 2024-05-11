@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from './hotel.entity';
 import { Repository } from 'typeorm';
 import { HotelListResult } from './hotel.list.result';
+import { HotelDetailsResult } from './dto/hotel.details.result';
 
 @Injectable()
 export class HotelsService {
@@ -38,5 +39,19 @@ export class HotelsService {
       availableHotels: hotels.length, // TODO
       totalHotels: hotels.length,
     }));
+  }
+
+  async getHotelById(id: number): Promise<Hotel> {
+    const hotel = await this.repository.findOne({
+      where: { id: id },
+      relations: {
+        city: true,
+        conveniences: true,
+        term: { registration: true, habitations: true },
+        rooms: true,
+      },
+    });
+
+    return hotel;
   }
 }

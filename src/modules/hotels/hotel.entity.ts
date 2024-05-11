@@ -28,6 +28,9 @@ export class Hotel extends BaseEntity {
   @Column({ length: 500, nullable: true })
   description: string;
 
+  @Column({ length: 200, nullable: true })
+  image: string;
+
   @Column({ nullable: true })
   address: string;
 
@@ -48,6 +51,9 @@ export class Hotel extends BaseEntity {
 
   @ManyToOne(() => Term, (term) => term.hotels)
   term: Term;
+
+  @Column({ type: 'float', nullable: true, default: 0.0 })
+  rating: number;
 
   @OneToMany(() => Review, (review) => review.hotel)
   reviews: Review[];

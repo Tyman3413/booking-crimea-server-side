@@ -1,7 +1,10 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HotelsService } from './hotels.service';
 import { HotelListResult } from './hotel.list.result';
+import { HotelDetailsResult } from './dto/hotel.details.result';
+import { Hotel } from './hotel.entity';
+import { HotelType } from './hotel.type.enum';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -23,5 +26,14 @@ export class HotelsController {
     @Query('cityId') cityId?: number,
   ): Promise<HotelListResult[]> {
     return await this.hotelsService.getHotelsByCityId(page, limit, cityId);
+  }
+
+  @ApiOperation({
+    summary: 'Получить информацию об определенном отеле по его ID',
+  })
+  @ApiResponse({ type: Hotel, isArray: false, status: 200 })
+  @Get(':id')
+  async getHotelById(@Param('id') id: number): Promise<Hotel> {
+    return await this.hotelsService.getHotelById(id);
   }
 }
