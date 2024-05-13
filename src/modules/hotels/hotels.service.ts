@@ -8,7 +8,6 @@ import { ReviewsService } from '../reviews/reviews.service';
 import { TermsService } from '../terms/terms.service';
 import { TermsDetailsResult } from '../terms/dto/terms.details.result';
 import { RoomsService } from '../rooms/rooms.service';
-import { RoomDetailsResult } from '../rooms/dto/room.details.result';
 
 @Injectable()
 export class HotelsService {
@@ -39,6 +38,7 @@ export class HotelsService {
     const result = hotels.map(async (hotel) => ({
       name: hotel.name,
       address: hotel.address,
+      img: hotel.image,
       rooms: hotel.rooms.length,
       totalPlaces: await this.countTotalPlaces(hotel.id),
       conveniences: hotel.conveniences,
