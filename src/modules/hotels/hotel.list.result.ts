@@ -2,6 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Convenience } from '../conveniences/convenience.entity';
 
 export class HotelListResult {
+  @ApiProperty({ example: 1 })
+  id: number;
+
   @ApiProperty({ example: 'Ялта-Интурист' })
   name: string;
 

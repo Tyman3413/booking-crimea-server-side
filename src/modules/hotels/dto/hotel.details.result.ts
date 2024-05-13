@@ -1,11 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ConvenienceResult } from '../../conveniences/convenience.result';
-import { Term } from '../../terms/term.entity';
-import { Room } from '../../rooms/room.entity';
 import { ReviewDetailsResult } from '../../reviews/dto/review.details.result';
 import { TermsDetailsResult } from '../../terms/dto/terms.details.result';
 import { RoomDetailsResult } from '../../rooms/dto/room.details.result';
-import { HotelsResult } from './hotels.result';
 import { HotelCoordsResult } from './hotel.coords.result';
 
 export class HotelDetailsResult {

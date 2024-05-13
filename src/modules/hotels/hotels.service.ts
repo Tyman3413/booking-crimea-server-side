@@ -36,6 +36,7 @@ export class HotelsService {
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
     const result = hotels.map(async (hotel) => ({
+      id: hotel.id,
       name: hotel.name,
       address: hotel.address,
       img: hotel.image,
