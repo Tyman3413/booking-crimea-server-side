@@ -10,6 +10,9 @@ export class HotelListResult {
   })
   address: string;
 
+  @ApiProperty({ example: 'https://link.com/to/photo.jpg' })
+  img: string;
+
   @ApiProperty({ example: 50 })
   rooms: number;
 
