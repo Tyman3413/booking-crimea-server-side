@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Hotel } from '../hotels/hotel.entity';
+import { Room } from '../rooms/room.entity';
 
 @Entity('conveniences')
 export class Convenience extends BaseEntity {
@@ -18,6 +19,9 @@ export class Convenience extends BaseEntity {
   @Column({ nullable: true })
   icon: string; // TODO change to image
 
-  @ManyToMany(() => Hotel)
+  @ManyToMany(() => Hotel, (hotel) => hotel.conveniences)
   hotels: Hotel[];
+
+  @ManyToMany(() => Room, (room) => room.conveniences)
+  rooms: Room[];
 }

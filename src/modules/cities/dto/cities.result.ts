@@ -9,16 +9,16 @@ export class CitiesResult {
   title: string;
 
   @ApiProperty({
-    example: 'Севастополь - город на юго-западе Крымского полуострова ...',
+    example: 'Описание города ...',
   })
   description: string;
 
   @ApiProperty({ example: 'https://somesite.com/photo.jpg' })
   img: string;
 
+  @ApiProperty({ type: () => HotelsResult, isArray: true })
+  hotels: HotelsResult[];
+
   @ApiProperty({ example: 100 })
   totalHotels: number;
-
-  @ApiProperty()
-  hotels: HotelsResult[];
 }

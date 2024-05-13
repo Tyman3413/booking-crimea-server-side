@@ -126,4 +126,8 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true, default: false })
   disabled: boolean;
+
+  public getFullName(): string {
+    return `${this.firstName} + ' ' + ${this.lastName} || ''`;
+  }
 }

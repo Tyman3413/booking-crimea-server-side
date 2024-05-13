@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ReviewDetailsDto } from '../../reviews/review.details.dto';
+import { ReviewDetailsResult } from '../../reviews/dto/review.details.result';
 
 export class HotelRateResult {
   @ApiProperty({ example: 4.5 })
@@ -8,6 +8,6 @@ export class HotelRateResult {
   @ApiProperty({ example: 55 })
   totalComments: number;
 
-  @ApiProperty()
-  comments: ReviewDetailsDto[];
+  @ApiProperty({ type: () => ReviewDetailsResult, isArray: true })
+  comments: ReviewDetailsResult[];
 }

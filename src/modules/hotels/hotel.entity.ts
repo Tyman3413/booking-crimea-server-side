@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -49,11 +50,21 @@ export class Hotel extends BaseEntity {
   @JoinTable()
   conveniences: Convenience[];
 
+  @Column({ name: 'term_id', nullable: true })
+  termId: number;
+
   @ManyToOne(() => Term, (term) => term.hotels)
+  @JoinColumn({ name: 'term_id' })
   term: Term;
 
   @Column({ type: 'float', nullable: true, default: 0.0 })
   rating: number;
+
+  @Column({ nullable: true })
+  latitude: string;
+
+  @Column({ nullable: true })
+  longitude: string;
 
   @OneToMany(() => Review, (review) => review.hotel)
   reviews: Review[];
