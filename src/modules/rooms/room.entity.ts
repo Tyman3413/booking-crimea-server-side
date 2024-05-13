@@ -3,10 +3,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Hotel } from '../hotels/hotel.entity';
+import { Convenience } from '../conveniences/convenience.entity';
 
 @Entity('rooms')
 export class Room extends BaseEntity {
@@ -14,7 +17,10 @@ export class Room extends BaseEntity {
   id: number;
 
   @Column({ length: 256, nullable: false })
-  name: string;
+  title: string;
+
+  @Column({ length: 256, nullable: true })
+  subtitle: string;
 
   @Column()
   description: string;
@@ -25,24 +31,26 @@ export class Room extends BaseEntity {
   @Column()
   places: number;
 
-  @Column()
+  @Column({ name: 'extra_beds', nullable: true })
   extraBeds: number;
 
-  @Column()
+  @Column({ name: 'room_size', nullable: true })
   roomSize: number;
 
-  @Column()
+  @Column({ nullable: true })
   price: number;
 
-  @Column()
+  @Column({ nullable: true })
   photos: string; // TODO change to image array
 
-  // TODO add conveniences
-
-  @Column({ nullable: true })
+  @Column({ name: 'hotel_id', nullable: true })
   hotelId: number;
 
   @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
-  @JoinColumn({ name: 'hotelId' })
+  @JoinColumn({ name: 'hotel_id' })
   hotel: Hotel;
+
+  @ManyToMany(() => Convenience, (convenience) => convenience.rooms)
+  @JoinTable()
+  conveniences: Convenience[];
 }

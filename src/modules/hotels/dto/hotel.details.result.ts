@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ConvenienceResult } from '../../conveniences/convenience.result';
 import { Term } from '../../terms/term.entity';
 import { Room } from '../../rooms/room.entity';
+import { ReviewDetailsResult } from '../../reviews/dto/review.details.result';
+import { TermsDetailsResult } from '../../terms/dto/terms.details.result';
+import { RoomDetailsResult } from '../../rooms/dto/room.details.result';
+import { HotelsResult } from './hotels.result';
+import { HotelCoordsResult } from './hotel.coords.result';
 
 export class HotelDetailsResult {
   @ApiProperty({ example: 1 })
@@ -13,8 +18,14 @@ export class HotelDetailsResult {
   @ApiProperty({ example: 'Севастополь - 99028, улица Ефремова, д.38' })
   address: string;
 
-  @ApiProperty()
-  rate: any;
+  @ApiProperty({ example: 4.7 })
+  rating: number;
+
+  @ApiProperty({ type: () => ReviewDetailsResult, isArray: true })
+  reviews: ReviewDetailsResult[];
+
+  @ApiProperty({ example: 15 })
+  totalReviews: number;
 
   @ApiProperty({ example: 7200 })
   minPrice: number;
@@ -22,15 +33,15 @@ export class HotelDetailsResult {
   @ApiProperty({ example: 'Описание отеля' })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => ConvenienceResult, isArray: true })
   conveniences: ConvenienceResult[];
 
-  @ApiProperty()
-  rules: Term;
+  @ApiProperty({ type: TermsDetailsResult })
+  rules: TermsDetailsResult;
 
-  @ApiProperty()
-  rooms: Room[];
+  @ApiProperty({ type: () => RoomDetailsResult, isArray: true })
+  rooms: RoomDetailsResult[];
 
-  @ApiProperty()
-  coords: any;
+  @ApiProperty({ type: HotelCoordsResult })
+  coords: HotelCoordsResult;
 }

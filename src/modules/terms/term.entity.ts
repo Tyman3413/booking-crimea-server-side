@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -17,7 +18,11 @@ export class Term extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: 'registration_id', nullable: true })
+  registrationId: number;
+
   @ManyToOne(() => Registration, (registration) => registration.terms)
+  @JoinColumn({ name: 'registration_id' })
   registration: Registration;
 
   @ManyToMany(() => Habitation, (habitation) => habitation.terms)

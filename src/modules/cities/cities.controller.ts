@@ -3,11 +3,11 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CitiesService } from './cities.service';
 import { CitiesResult } from './dto/cities.result';
 
+@ApiTags('Города 🏢')
 @Controller('cities')
 export class CitiesController {
   constructor(private readonly citiesService: CitiesService) {}
 
-  @ApiTags('Города 🏢')
   @ApiOperation({
     summary: 'Получить список популярных направлений',
   })

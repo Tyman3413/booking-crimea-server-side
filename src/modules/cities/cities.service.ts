@@ -43,8 +43,8 @@ export class CitiesService {
         title: city.name,
         description: city.description,
         img: city.photo,
-        totalHotels: city.hotels.length,
         hotels: hotelsResult,
+        totalHotels: city.hotels.length,
       };
     });
   }

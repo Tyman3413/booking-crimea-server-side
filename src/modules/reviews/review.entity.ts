@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -21,7 +22,14 @@ export class Review extends BaseEntity {
   @Column({ type: 'float', default: 0.0, nullable: false })
   rating: number;
 
+  @Column({ name: 'days_spent', nullable: true })
+  daysSpent: number;
+
+  @Column({ name: 'hotel_id', nullable: true })
+  hotelId: number;
+
   @ManyToOne(() => Hotel, (hotel) => hotel.reviews)
+  @JoinColumn({ name: 'hotel_id' })
   hotel: Hotel;
 
   @ManyToOne(() => User, (user) => user.reviews)

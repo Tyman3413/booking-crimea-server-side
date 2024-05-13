@@ -4,7 +4,6 @@ import { HotelsService } from './hotels.service';
 import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { Hotel } from './hotel.entity';
-import { HotelType } from './hotel.type.enum';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -31,9 +30,9 @@ export class HotelsController {
   @ApiOperation({
     summary: 'Получить информацию об определенном отеле по его ID',
   })
-  @ApiResponse({ type: Hotel, isArray: false, status: 200 })
+  @ApiResponse({ type: HotelDetailsResult, isArray: false, status: 200 })
   @Get(':id')
-  async getHotelById(@Param('id') id: number): Promise<Hotel> {
+  async getHotelById(@Param('id') id: number): Promise<HotelDetailsResult> {
     return await this.hotelsService.getHotelById(id);
   }
 }
