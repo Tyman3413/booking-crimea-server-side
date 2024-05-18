@@ -84,7 +84,7 @@ export class HotelsController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 8,
     @Query('cityId') cityId?: number,
-    @Query('sort') sort: string = 'popularity',
+    @Query('sort') sort: string = 'name',
     @Query('direction') direction: string = 'DESC',
   ): Promise<HotelListResult[]> {
     return await this.hotelsService.getHotelsByCityId(

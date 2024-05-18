@@ -54,11 +54,11 @@ export class HotelsService {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
-    if (sort === 'popularity') {
-      order.hotels = direction as 'ASC' | 'DESC';
-    } else if (sort === 'name') {
-      order.name = direction as 'ASC' | 'DESC';
-    }
+    // if (sort === 'popularity') {
+    //   order.hotel = direction as 'ASC' | 'DESC';
+    // } else if (sort === 'name') {
+    //   order.name = direction as 'ASC' | 'DESC';
+    // }
 
     let queryBuilder = this.repository
       .createQueryBuilder('hotel')
@@ -69,7 +69,7 @@ export class HotelsService {
     if (cityId) {
       queryBuilder = queryBuilder.where('hotel.cityId = :cityId', { cityId });
     }
-    queryBuilder.orderBy(order);
+    // queryBuilder.orderBy(order);
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
