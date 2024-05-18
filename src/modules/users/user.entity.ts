@@ -128,6 +128,6 @@ export class User extends BaseEntity {
   disabled: boolean;
 
   public getFullName(): string {
-    return `${this.firstName} + ' ' + ${this.lastName} || ''`;
+    return `${this.firstName || ''} ${this.lastName || ''}`;
   }
 }
