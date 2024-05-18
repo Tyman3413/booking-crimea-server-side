@@ -17,6 +17,7 @@ import { Term } from '../terms/term.entity';
 import { Review } from '../reviews/review.entity';
 import { Order } from '../orders/order.entity';
 import { City } from '../cities/city.entity';
+import { Landlord } from '../landlords/entities/landlord.entity';
 
 @Entity('hotels')
 export class Hotel extends BaseEntity {
@@ -78,6 +79,13 @@ export class Hotel extends BaseEntity {
   @ManyToOne(() => City, (city) => city.hotels)
   @JoinTable()
   city: City;
+
+  @Column({ name: 'landlord_id', nullable: true })
+  landlordId: number;
+
+  @ManyToOne(() => Landlord, (landlord) => landlord.hotels)
+  @JoinColumn({ name: 'landlord_id' })
+  landlord: Landlord;
 
   @OneToMany(() => Room, (room) => room.hotel)
   rooms: Room[];

@@ -16,4 +16,21 @@ export class CountriesService {
     });
     if (!existingCountry) return await this.repository.save(country);
   }
+
+  async findAll(search?: string): Promise<Country[]> {
+    const countries = this.repository.createQueryBuilder('country');
+    if (search) {
+      countries
+        .where('LOWER(country.name) LIKE :name', {
+          name: `${search.toLowerCase()}%`,
+        })
+        .orWhere('LOWER(country.englishName) LIKE :name', {
+          name: `${search.toLowerCase()}%`,
+        })
+        .orWhere('LOWER(country.iso2) LIKE :name', {
+          name: `${search.toLowerCase()}%`,
+        });
+    }
+    return await countries.getMany();
+  }
 }

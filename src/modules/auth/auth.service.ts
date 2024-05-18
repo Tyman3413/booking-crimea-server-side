@@ -35,6 +35,7 @@ export class AuthService {
     try {
       const existingUser = await this.validateUser(user);
       const payload = {
+        id: existingUser.id,
         email: existingUser.email,
         sub: existingUser.id,
         role: existingUser.role,

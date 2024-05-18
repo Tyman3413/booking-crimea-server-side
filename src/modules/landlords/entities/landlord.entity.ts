@@ -17,6 +17,7 @@ import { FileDetails } from '../../filemanager/file.dto';
 import { ContactPerson } from './contact.person.entity';
 import { LandlordSocialLinks } from './landlord.social.links.entity';
 import { City } from '../../cities/city.entity';
+import { Hotel } from '../../hotels/hotel.entity';
 
 @Entity('landlords')
 export class Landlord extends BaseEntity {
@@ -98,6 +99,9 @@ export class Landlord extends BaseEntity {
 
   @Column({ type: 'jsonb', nullable: true })
   documents: FileDetails[];
+
+  @OneToMany(() => Hotel, (hotel) => hotel.landlord)
+  hotels: Hotel[];
 
   @OneToMany(
     () => LandlordSocialLinks,
