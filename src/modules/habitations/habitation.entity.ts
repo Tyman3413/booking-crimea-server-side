@@ -15,6 +15,9 @@ export class Habitation extends BaseEntity {
   @Column({ length: 256, nullable: true })
   rule: string;
 
+  @Column({ nullable: true })
+  icon: string;
+
   @ManyToMany(() => Term, (term) => term.habitations)
   terms: Term[];
 }
