@@ -6,4 +6,7 @@ export class HabitationDetailsResult {
 
   @ApiProperty({ example: 'Курение запрещено' })
   rule: string;
+
+  @ApiProperty({ example: '<i class="fa-solid fa-wifi"></i>' })
+  icon: string;
 }

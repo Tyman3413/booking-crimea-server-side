@@ -117,6 +117,7 @@ export class HotelsService {
       habitations: terms.habitations.map((habitation) => ({
         id: habitation.id,
         rule: habitation.rule,
+        icon: habitation.icon,
       })),
     };
 
