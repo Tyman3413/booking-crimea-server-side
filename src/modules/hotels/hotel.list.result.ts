@@ -27,10 +27,4 @@ export class HotelListResult {
 
   @ApiProperty({ example: 7200 })
   cheapestPrice: number;
-
-  @ApiProperty({ example: 75 })
-  availableHotels: number;
-
-  @ApiProperty({ example: 100 })
-  totalHotels: number;
 }
