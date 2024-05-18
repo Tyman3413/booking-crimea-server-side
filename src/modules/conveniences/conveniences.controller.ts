@@ -3,7 +3,7 @@ import { ConveniencesService } from './conveniences.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Удобства 🛁')
-@Controller()
+@Controller('conveniences')
 export class ConveniencesController {
   constructor(private readonly conveniencesService: ConveniencesService) {}
 
