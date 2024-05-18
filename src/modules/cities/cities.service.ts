@@ -19,15 +19,27 @@ export class CitiesService {
     if (!existingCity) return await this.repository.save(city);
   }
 
-  async findAll(page: number, limit: number): Promise<CitiesResult[]> {
+  async findAll(
+    page: number,
+    limit: number,
+    sort: string,
+    direction: string,
+    search?: string,
+  ): Promise<CitiesResult[]> {
     const skip = limit * (page - 1);
 
-    const cities = await this.repository.find({
-      relations: { hotels: true },
-      order: { population: 'DESC' }, // TODO change order by hotels count
-      skip: skip,
-      take: limit,
-    });
+    const queryBuilder = this.repository
+      .createQueryBuilder('city')
+      .leftJoinAndSelect('city.hotels', 'hotels')
+      .orderBy(`city.${sort}`, direction as 'ASC' | 'DESC');
+
+    if (search) {
+      queryBuilder.where('LOWER(city.name) LIKE :search', {
+        search: `${search.toLowerCase()}%`,
+      });
+    }
+
+    const cities = await queryBuilder.skip(skip).take(limit).getMany();
 
     return cities.map((city) => {
       const hotelsResult: HotelsResult[] = city.hotels.map((hotel) => ({

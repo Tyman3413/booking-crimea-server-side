@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Hotel } from '../hotels/hotel.entity';
 import { Convenience } from '../conveniences/convenience.entity';
+import { Order } from '../orders/order.entity';
 
 @Entity('rooms')
 export class Room extends BaseEntity {
@@ -49,6 +50,9 @@ export class Room extends BaseEntity {
   @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
   @JoinColumn({ name: 'hotel_id' })
   hotel: Hotel;
+
+  @ManyToMany(() => Order, (order) => order.rooms)
+  orders: Order[];
 
   @ManyToMany(() => Convenience, (convenience) => convenience.rooms)
   @JoinTable()

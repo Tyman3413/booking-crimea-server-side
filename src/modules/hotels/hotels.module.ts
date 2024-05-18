@@ -7,6 +7,8 @@ import { CategoriesModule } from '../categories/categories.module';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { TermsModule } from '../terms/terms.module';
 import { RoomsModule } from '../rooms/rooms.module';
+import { OrdersModule } from '../orders/orders.module';
+import { ConveniencesModule } from '../conveniences/conveniences.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { RoomsModule } from '../rooms/rooms.module';
     forwardRef(() => ReviewsModule),
     forwardRef(() => TermsModule),
     forwardRef(() => RoomsModule),
+    forwardRef(() => OrdersModule),
+    forwardRef(() => ConveniencesModule),
   ],
   controllers: [HotelsController],
   providers: [HotelsService],
