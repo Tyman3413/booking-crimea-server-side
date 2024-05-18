@@ -50,7 +50,11 @@ export class HotelsService {
     sort: string,
     direction: string,
     cityId?: number,
-  ): Promise<HotelListResult[]> {
+  ): Promise<{
+    hotels: HotelListResult[];
+    availableHotels: number;
+    totalHotels: number;
+  }> {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
@@ -73,20 +77,24 @@ export class HotelsService {
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
-    const result = hotels.map(async (hotel) => ({
-      id: hotel.id,
-      name: hotel.name,
-      address: hotel.address,
-      img: hotel.image,
-      rooms: hotel.rooms.length,
-      totalPlaces: await this.countTotalPlaces(hotel.id),
-      conveniences: hotel.conveniences,
-      cheapestPrice: hotel.cheapestPrice,
+    const result = await Promise.all(
+      hotels.map(async (hotel) => ({
+        id: hotel.id,
+        name: hotel.name,
+        address: hotel.address,
+        img: hotel.image,
+        rooms: hotel.rooms.length,
+        totalPlaces: await this.countTotalPlaces(hotel.id),
+        conveniences: hotel.conveniences,
+        cheapestPrice: hotel.cheapestPrice,
+      })),
+    );
+
+    return {
+      hotels: result,
       availableHotels: hotels.length,
       totalHotels: hotels.length,
-    }));
-
-    return Promise.all(result);
+    };
   }
 
   async getHotelById(id: number): Promise<HotelDetailsResult> {
