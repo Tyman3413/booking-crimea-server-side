@@ -48,20 +48,29 @@ export class AuthService {
     }
   }
 
-  async register(user: CreateUserDto) {
+  async register(user: CreateUserDto): Promise<{ access_token: string }> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
     if (existingUser) {
       throw new ConflictException('Пользователь с таким Email уже существует');
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    await this.usersService.create({
+    const newUser = await this.usersService.create({
       firstName: user.firstName,
       email: user.email,
       password: hashedPassword,
       role: user.role,
     });
 
-    return true;
+    const payload = {
+      id: newUser.id,
+      email: newUser.email,
+      sub: newUser.id,
+      role: newUser.role,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
