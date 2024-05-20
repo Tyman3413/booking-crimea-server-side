@@ -50,11 +50,7 @@ export class HotelsService {
     sort: string,
     direction: string,
     cityId?: number,
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
@@ -77,24 +73,20 @@ export class HotelsService {
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
-    const result = await Promise.all(
-      hotels.map(async (hotel) => ({
-        id: hotel.id,
-        name: hotel.name,
-        address: hotel.address,
-        img: hotel.image,
-        rooms: hotel.rooms.length,
-        totalPlaces: await this.countTotalPlaces(hotel.id),
-        conveniences: hotel.conveniences,
-        cheapestPrice: hotel.cheapestPrice,
-      })),
-    );
-
-    return {
-      hotels: result,
+    const result = hotels.map(async (hotel) => ({
+      id: hotel.id,
+      name: hotel.name,
+      address: hotel.address,
+      img: hotel.image,
+      rooms: hotel.rooms.length,
+      totalPlaces: await this.countTotalPlaces(hotel.id),
+      conveniences: hotel.conveniences,
+      cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
       totalHotels: hotels.length,
-    };
+    }));
+
+    return Promise.all(result);
   }
 
   async getHotelById(id: number): Promise<HotelDetailsResult> {
@@ -187,11 +179,7 @@ export class HotelsService {
     limit: number,
     sort: string,
     direction: string,
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
@@ -213,24 +201,20 @@ export class HotelsService {
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
-    const result = await Promise.all(
-      hotels.map(async (hotel) => ({
-        id: hotel.id,
-        name: hotel.name,
-        address: hotel.address,
-        img: hotel.image,
-        rooms: hotel.rooms.length,
-        totalPlaces: await this.countTotalPlaces(hotel.id),
-        conveniences: hotel.conveniences,
-        cheapestPrice: hotel.cheapestPrice,
-      })),
-    );
-
-    return {
-      hotels: result,
+    const result = hotels.map(async (hotel) => ({
+      id: hotel.id,
+      name: hotel.name,
+      address: hotel.address,
+      img: hotel.image,
+      rooms: hotel.rooms.length,
+      totalPlaces: await this.countTotalPlaces(hotel.id),
+      conveniences: hotel.conveniences,
+      cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
       totalHotels: hotels.length,
-    };
+    }));
+
+    return Promise.all(result);
   }
 
   async findAvailableHotels(
@@ -239,11 +223,7 @@ export class HotelsService {
     sort: string,
     direction: string,
     findBody: FindAvailableHotelsDto,
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     const skip = limit * (page - 1);
     const { cityId, checkIn, checkOut, guests } = findBody;
     const checkInDate = checkIn ? new Date(checkIn) : undefined;
@@ -277,24 +257,20 @@ export class HotelsService {
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
-    const result = await Promise.all(
-      hotels.map(async (hotel) => ({
-        id: hotel.id,
-        name: hotel.name,
-        address: hotel.address,
-        img: hotel.image,
-        rooms: hotel.rooms.length,
-        totalPlaces: await this.countTotalPlaces(hotel.id),
-        conveniences: hotel.conveniences,
-        cheapestPrice: hotel.cheapestPrice,
-      })),
-    );
-
-    return {
-      hotels: result,
+    const result = hotels.map(async (hotel) => ({
+      id: hotel.id,
+      name: hotel.name,
+      address: hotel.address,
+      img: hotel.image,
+      rooms: hotel.rooms.length,
+      totalPlaces: await this.countTotalPlaces(hotel.id),
+      conveniences: hotel.conveniences,
+      cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
       totalHotels: hotels.length,
-    };
+    }));
+
+    return Promise.all(result);
   }
 
   async countTotalPlaces(hotelId: number): Promise<number> {

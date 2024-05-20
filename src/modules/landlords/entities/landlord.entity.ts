@@ -13,11 +13,11 @@ import { State } from '../../states/state.entity';
 import { LandlordType } from '../landlord.type.enum';
 import { LandlordStatus } from '../landlord.status.enum';
 import { User } from '../../users/user.entity';
-import { FileDetails } from '../../filemanager/file.dto';
 import { ContactPerson } from './contact.person.entity';
 import { LandlordSocialLinks } from './landlord.social.links.entity';
 import { City } from '../../cities/city.entity';
 import { Hotel } from '../../hotels/hotel.entity';
+import { FileDetailsDto } from '../../filemanager/dto/file.dto';
 
 @Entity('landlords')
 export class Landlord extends BaseEntity {
@@ -95,10 +95,10 @@ export class Landlord extends BaseEntity {
   user: User;
 
   @Column({ type: 'jsonb', nullable: true })
-  logo: FileDetails;
+  logo: FileDetailsDto;
 
   @Column({ type: 'jsonb', nullable: true })
-  documents: FileDetails[];
+  documents: FileDetailsDto[];
 
   @OneToMany(() => Hotel, (hotel) => hotel.landlord)
   hotels: Hotel[];

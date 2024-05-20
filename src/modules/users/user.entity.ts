@@ -10,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { FileDetails } from '../filemanager/file.dto';
 import { Country } from '../countries/country.entity';
 import { State } from '../states/state.entity';
 import { Landlord } from '../landlords/entities/landlord.entity';
@@ -19,6 +18,7 @@ import { Order } from '../orders/order.entity';
 import { City } from '../cities/city.entity';
 import { UserGender } from './enums/user.gender.enum';
 import { UserRole } from './enums/user.role.enum';
+import { FileDetailsDto } from '../filemanager/dto/file.dto';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -83,7 +83,7 @@ export class User extends BaseEntity {
   passport: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  avatar: FileDetails;
+  avatar: FileDetailsDto;
 
   @Column({ length: 10, nullable: true, default: 'ru-RU' })
   locale: string;

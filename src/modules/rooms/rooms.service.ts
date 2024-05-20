@@ -35,4 +35,8 @@ export class RoomsService {
       return !overlappingOrder;
     });
   }
+
+  async getById(id: number): Promise<Room> {
+    return await this.repository.findOne({ where: { id: id } });
+  }
 }
