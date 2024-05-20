@@ -95,6 +95,6 @@ export class Hotel extends BaseEntity {
   orders: Order[];
 
   // TODO move to S3
-  @OneToMany(() => HotelImagesEntity, (hotelImages) => hotelImages.hotelId)
+  @OneToMany(() => HotelImagesEntity, (hotelImages) => hotelImages.hotel)
   hotelImages: HotelImagesEntity[];
 }

@@ -20,7 +20,7 @@ export class HotelImagesEntity extends BaseEntity {
   @Column({ nullable: true })
   hotelId: number;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.id)
+  @ManyToOne(() => Hotel, (hotel) => hotel.hotelImages)
   @JoinColumn({ name: 'hotelId' })
   hotel: Hotel;
 }
