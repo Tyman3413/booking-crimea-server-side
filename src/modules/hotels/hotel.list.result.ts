@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Convenience } from '../conveniences/convenience.entity';
 import { FileDetailsDto } from '../filemanager/dto/file.dto';
+import { HotelImagesEntity } from '../temp/hotel.images.entity';
 
 export class HotelListResult {
   @ApiProperty({ example: 1 })
@@ -16,6 +17,9 @@ export class HotelListResult {
 
   @ApiProperty({ example: 'https://link.com/to/photo.jpg' })
   img: string;
+
+  @ApiProperty()
+  tempImages: HotelImagesEntity[];
 
   @ApiProperty({ example: 50 })
   rooms: number;

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ConvenienceResult } from '../../conveniences/convenience.result';
+import { RoomImagesEntity } from '../../temp/room.images.entity';
 
 export class RoomDetailsResult {
   @ApiProperty({ example: 1 })
@@ -7,6 +8,9 @@ export class RoomDetailsResult {
 
   @ApiProperty({ example: 'Номер #1' })
   title: string;
+
+  @ApiProperty()
+  tempImages: RoomImagesEntity[];
 
   @ApiProperty({ example: 'Краткое описание номера' })
   subtitle: string;

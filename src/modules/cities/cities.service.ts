@@ -31,6 +31,7 @@ export class CitiesService {
     const queryBuilder = this.repository
       .createQueryBuilder('city')
       .leftJoinAndSelect('city.hotels', 'hotels')
+      .leftJoinAndSelect('hotels.hotelImages', 'hotelImages')
       .orderBy(`city.${sort}`, direction as 'ASC' | 'DESC');
 
     if (search) {
@@ -45,6 +46,7 @@ export class CitiesService {
       const hotelsResult: HotelsResult[] = city.hotels.map((hotel) => ({
         id: hotel.id,
         img: hotel.image,
+        tempImages: hotel.hotelImages,
         name: hotel.name,
         address: hotel.address,
         cheapestPrice: hotel.cheapestPrice,

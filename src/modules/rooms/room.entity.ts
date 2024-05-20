@@ -6,11 +6,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Hotel } from '../hotels/hotel.entity';
 import { Convenience } from '../conveniences/convenience.entity';
 import { Order } from '../orders/order.entity';
+import { RoomImagesEntity } from '../temp/room.images.entity';
 
 @Entity('rooms')
 export class Room extends BaseEntity {
@@ -57,4 +59,8 @@ export class Room extends BaseEntity {
   @ManyToMany(() => Convenience, (convenience) => convenience.rooms)
   @JoinTable()
   conveniences: Convenience[];
+
+  // TODO move to S3
+  @OneToMany(() => RoomImagesEntity, (roomImages) => roomImages.roomId)
+  roomImages: RoomImagesEntity[];
 }
