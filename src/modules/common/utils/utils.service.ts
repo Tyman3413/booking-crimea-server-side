@@ -7,4 +7,12 @@ export abstract class UtilsService {
       return Buffer.from(base64, 'base64').toString();
     }
   }
+
+  public static differenceInDays(checkIn: Date, checkOut: Date): number {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    const timeDifference = checkOutDate.getTime() - checkInDate.getTime();
+    return timeDifference / (1000 * 3600 * 24);
+  }
 }

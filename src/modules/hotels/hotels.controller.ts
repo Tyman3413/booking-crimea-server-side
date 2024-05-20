@@ -37,11 +37,7 @@ export class HotelsController {
     @Query('sort') sort: string = 'population',
     @Query('direction') direction: string = 'DESC',
     @Body() findBody: FindAvailableHotelsDto,
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     return this.hotelsService.findAvailableHotels(
       page,
       limit,
@@ -64,11 +60,7 @@ export class HotelsController {
     @Query('limit') limit: number = 8,
     @Query('sort') sort: string = 'population',
     @Query('direction') direction: string = 'DESC',
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     return await this.hotelsService.getPrivateHotels(
       page,
       limit,
@@ -94,11 +86,7 @@ export class HotelsController {
     @Query('cityId') cityId?: number,
     @Query('sort') sort: string = 'name',
     @Query('direction') direction: string = 'DESC',
-  ): Promise<{
-    hotels: HotelListResult[];
-    availableHotels: number;
-    totalHotels: number;
-  }> {
+  ): Promise<HotelListResult[]> {
     return await this.hotelsService.getHotelsByCityId(
       page,
       limit,

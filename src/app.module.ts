@@ -17,6 +17,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { RegistrationsModule } from './modules/registrations/registrations.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { TermsModule } from './modules/terms/terms.module';
+import { FileManagerModule } from './modules/filemanager/filemanager.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TermsModule } from './modules/terms/terms.module';
     ConveniencesModule,
     CountriesModule,
     DatabaseModule,
+    FileManagerModule,
     HabitationsModule,
     HotelsModule,
     LandlordsModule,
