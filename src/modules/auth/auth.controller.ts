@@ -39,7 +39,9 @@ export class AuthController {
     description: 'Данные пользователя для регистрации',
   })
   @Post('register')
-  async register(@Body() user: CreateUserDto): Promise<boolean> {
+  async register(
+    @Body() user: CreateUserDto,
+  ): Promise<{ access_token: string }> {
     return this.authService.register(user);
   }
 }
