@@ -61,6 +61,6 @@ export class Room extends BaseEntity {
   conveniences: Convenience[];
 
   // TODO move to S3
-  @OneToMany(() => RoomImagesEntity, (roomImages) => roomImages.roomId)
+  @OneToMany(() => RoomImagesEntity, (roomImages) => roomImages.room)
   roomImages: RoomImagesEntity[];
 }
