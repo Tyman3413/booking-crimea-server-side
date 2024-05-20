@@ -81,6 +81,7 @@ export class HotelsService {
       .leftJoinAndSelect('hotel.rooms', 'rooms')
       .leftJoinAndSelect('hotel.conveniences', 'conveniences')
       .leftJoinAndSelect('hotel.landlord', 'landlord')
+      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
       .where('landlord.type = :type', { type: LandlordType.COMPANY });
     if (cityId) {
       queryBuilder = queryBuilder.where('hotel.cityId = :cityId', { cityId });
@@ -94,6 +95,7 @@ export class HotelsService {
       name: hotel.name,
       address: hotel.address,
       img: hotel.image,
+      tempImages: hotel.hotelImages,
       rooms: hotel.rooms.length,
       totalPlaces: await this.countTotalPlaces(hotel.id),
       conveniences: hotel.conveniences,
@@ -114,6 +116,7 @@ export class HotelsService {
         term: { registration: true, habitations: true },
         rooms: true,
         reviews: true,
+        hotelImages: true,
       },
     });
 
@@ -140,6 +143,7 @@ export class HotelsService {
     return {
       id: hotel.id,
       title: hotel.name,
+      tempImages: hotel.hotelImages,
       address: hotel.address,
       rating: hotel.rating,
       reviews: reviews.map((review) => ({
@@ -162,6 +166,7 @@ export class HotelsService {
       rooms: rooms.map((room) => ({
         id: room.id,
         title: room.title,
+        tempImages: room.roomImages,
         subtitle: room.subtitle,
         description: room.description,
         beds: room.beds,
@@ -210,6 +215,7 @@ export class HotelsService {
       .leftJoinAndSelect('hotel.rooms', 'rooms')
       .leftJoinAndSelect('hotel.conveniences', 'conveniences')
       .leftJoinAndSelect('hotel.landlord', 'landlord')
+      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
       .where('landlord.type IN (:...type)', {
         type: [LandlordType.PRIVATE, LandlordType.OTHER],
       })
@@ -222,6 +228,7 @@ export class HotelsService {
       name: hotel.name,
       address: hotel.address,
       img: hotel.image,
+      tempImages: hotel.hotelImages,
       rooms: hotel.rooms.length,
       totalPlaces: await this.countTotalPlaces(hotel.id),
       conveniences: hotel.conveniences,
@@ -262,6 +269,7 @@ export class HotelsService {
       .leftJoinAndSelect('hotels.rooms', 'rooms')
       .leftJoinAndSelect('hotels.conveniences', 'conveniences')
       .leftJoinAndSelect('hotels.orders', 'orders')
+      .leftJoinAndSelect('hotels.hotelImages', 'hotelImages')
       .where('hotels.cityId = :cityId', { cityId: cityId })
       .andWhere('rooms.places >= :guests', { guests: guests });
 
@@ -278,6 +286,7 @@ export class HotelsService {
       name: hotel.name,
       address: hotel.address,
       img: hotel.image,
+      tempImages: hotel.hotelImages,
       rooms: hotel.rooms.length,
       totalPlaces: await this.countTotalPlaces(hotel.id),
       conveniences: hotel.conveniences,

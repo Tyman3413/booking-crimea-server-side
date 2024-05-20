@@ -23,6 +23,7 @@ import { CreateHotelDto } from './dto/create.hotel.dto';
 import { CurrentUser } from '../users/decorators/user.decorator';
 import { UserPayload } from '../auth/dto/user.payload';
 import { AuthGuard } from '@nestjs/passport';
+import { Hotel } from './hotel.entity';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -37,7 +38,7 @@ export class HotelsController {
   async createAdvertisement(
     @CurrentUser() user: UserPayload,
     @Body() dto: CreateHotelDto,
-  ) {
+  ): Promise<Hotel> {
     return await this.hotelsService.create(user, dto);
   }
 

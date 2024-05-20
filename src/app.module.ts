@@ -18,6 +18,7 @@ import { RegistrationsModule } from './modules/registrations/registrations.modul
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { TermsModule } from './modules/terms/terms.module';
 import { FileManagerModule } from './modules/filemanager/filemanager.module';
+import { TempModule } from './modules/temp/temp.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { FileManagerModule } from './modules/filemanager/filemanager.module';
     ReviewsModule,
     RoomsModule,
     StatesModule,
+    TempModule,
     TermsModule,
     UsersModule,
   ],
