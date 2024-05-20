@@ -17,7 +17,10 @@ export class Convenience extends BaseEntity {
   name: string;
 
   @Column({ nullable: true })
-  icon: string; // TODO change to image
+  icon: string;
+
+  @Column({ nullable: true })
+  userId: number;
 
   @ManyToMany(() => Hotel, (hotel) => hotel.conveniences)
   hotels: Hotel[];
