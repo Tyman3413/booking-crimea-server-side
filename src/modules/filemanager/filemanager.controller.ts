@@ -8,14 +8,18 @@ import {
   Res,
   ParseFilePipe,
   MaxFileSizeValidator,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { imageAndDocumentsFileFilter } from './filemanager.utils';
 import { memoryStorage } from 'multer';
 import { FileDetailsDto } from './dto/file.dto';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { FileManagerService } from './filemanager.service';
+import { ApiMultiFile } from './filemanager.decorators';
+import { MultipleLimitFileException } from './exceptions/multiple.file.exception';
+import { FileErrorOccurredException } from './exceptions/filemanager.exceptions';
 
 const configService = new ConfigService();
 
@@ -84,5 +88,33 @@ export class FileManagerController {
       'Content-Length': objectS3.Body.length,
     });
     response.end(objectS3.Body);
+  }
+
+  @Post('s3/upload/file/multiple')
+  @ApiConsumes('multipart/form-data')
+  @ApiMultiFile()
+  @UseInterceptors(
+    FilesInterceptor('files', 5, {
+      storage: memoryStorage(),
+      dest: './tmp',
+      fileFilter: imageAndDocumentsFileFilter,
+    }),
+  )
+  async uploadMultipleFilesS3(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ): Promise<FileDetailsDto[]> {
+    if (files.length > UPLOAD_LIMIT_FILES)
+      throw new MultipleLimitFileException();
+    if (files) {
+      return new Promise(async (resolve) => {
+        const response = new Array<FileDetailsDto>();
+        for (const file of files) {
+          response.push(await this.fileManagerService.uploadFile(file));
+        }
+        resolve(response);
+      });
+    } else {
+      throw new FileErrorOccurredException();
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileDetailsDto } from '../../filemanager/dto/file.dto';
 
 export class HotelsResult {
   @ApiProperty({ example: 1 })

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileDetailsDto } from '../../filemanager/dto/file.dto';
 
 export class CreateHotelDto {
   @ApiProperty()
@@ -17,8 +18,11 @@ export class CreateHotelDto {
   conveniences: number[];
 
   @ApiProperty()
+  newConvenience?: string;
+
+  @ApiProperty()
   contactPhone: string;
 
   @ApiProperty()
-  image: string;
+  images: FileDetailsDto[];
 }

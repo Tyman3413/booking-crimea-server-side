@@ -1,5 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
   ApiBody,
   ApiOperation,
   ApiQuery,
@@ -11,6 +20,9 @@ import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { FindAvailableHotelsDto } from './dto/find.available.hotels.dto';
 import { CreateHotelDto } from './dto/create.hotel.dto';
+import { CurrentUser } from '../users/decorators/user.decorator';
+import { UserPayload } from '../auth/dto/user.payload';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -18,10 +30,15 @@ export class HotelsController {
   constructor(private readonly hotelsService: HotelsService) {}
 
   @ApiOperation({ summary: 'Конструктор объявления отеля' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiBody({ type: CreateHotelDto })
   @Post()
-  async createAdvertisement(@Body() dto: CreateHotelDto) {
-    return await this.hotelsService.create(dto);
+  async createAdvertisement(
+    @CurrentUser() user: UserPayload,
+    @Body() dto: CreateHotelDto,
+  ) {
+    return await this.hotelsService.create(user, dto);
   }
 
   @ApiOperation({ summary: 'Поиск отелей, подходящих под намеченную дату' })

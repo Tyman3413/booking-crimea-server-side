@@ -13,6 +13,8 @@ import { OrdersService } from '../orders/orders.service';
 import { FindAvailableHotelsDto } from './dto/find.available.hotels.dto';
 import { CreateHotelDto } from './dto/create.hotel.dto';
 import { ConveniencesService } from '../conveniences/conveniences.service';
+import { Convenience } from '../conveniences/convenience.entity';
+import { UserPayload } from '../auth/dto/user.payload';
 
 @Injectable()
 export class HotelsService {
@@ -26,18 +28,32 @@ export class HotelsService {
     private readonly conveniencesService: ConveniencesService,
   ) {}
 
-  async create(body: CreateHotelDto) {
+  async create(user: UserPayload, body: CreateHotelDto) {
     const hotel = new Hotel();
     hotel.name = body.name;
     hotel.address = body.address;
     hotel.cheapestPrice = body.price;
     hotel.description = body.description;
-    hotel.image = body.image;
 
     if (body.conveniences && body.conveniences.length > 0) {
       hotel.conveniences = await this.conveniencesService.findAllByIds(
         body.conveniences,
       );
+    }
+
+    if (body.newConvenience) {
+      const newConvenienceNames = body.newConvenience.split(', ');
+
+      const newConveniences = await Promise.all(
+        newConvenienceNames.map(async (name) => {
+          const convenience = new Convenience();
+          convenience.name = name;
+          convenience.userId = user.id;
+          return await this.conveniencesService.create(convenience);
+        }),
+      );
+
+      hotel.conveniences = [...(hotel.conveniences || []), ...newConveniences];
     }
 
     const result = this.repository.create(hotel);
