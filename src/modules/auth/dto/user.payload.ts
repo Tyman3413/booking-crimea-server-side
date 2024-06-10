@@ -6,8 +6,15 @@ export class UserPayload {
   firstName: string;
   lastName: string;
   role: UserRole;
+}
+export function getFullName(user: UserPayload): string {
+  return `${user.firstName} ${user.lastName || ''}`;
+}
 
-  fullName(): string {
-    return `${this.firstName} ${this.lastName || ''}`;
-  }
+export function isAdmin(user: UserPayload): boolean {
+  return user.role === UserRole.ADMIN;
+}
+
+export function isLandlord(user: UserPayload): boolean {
+  return user.role === UserRole.LANDLORD;
 }

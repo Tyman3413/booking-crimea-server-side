@@ -7,6 +7,7 @@ export class LoginUserDto {
     example: 'john@example.com',
   })
   @IsEmail({}, { message: 'Некорректный формат электронной почты' })
+  @IsNotEmpty({ message: 'Электронная почта является обязательной' })
   email: string;
 
   @ApiProperty({ description: 'Пароль пользователя', example: 'Password123' })

@@ -3,6 +3,7 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CitiesService } from './cities.service';
 import { CitiesResult } from './dto/cities.result';
 import { UtilsService } from '../common/utils/utils.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('Города 🏢')
 @Controller('cities')
@@ -18,6 +19,7 @@ export class CitiesController {
   @ApiQuery({ name: 'direction', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiResponse({ type: CitiesResult, isArray: true, status: 200 })
+  @Public()
   @Get()
   async findAll(
     @Query('page') page: number = 1,
