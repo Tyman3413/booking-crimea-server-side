@@ -36,6 +36,7 @@ export const imageAndVideoFileFilter = (req, file, callback) => {
 };
 
 export const imageAndDocumentsFileFilter = (req, file, callback) => {
+  file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
   if (!file.originalname.toLowerCase().match(IMAGE_AND_DOCUMENTS_EXT)) {
     return callback(
       new HttpException(

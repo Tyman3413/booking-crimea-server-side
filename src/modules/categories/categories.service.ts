@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCategoryDto } from './dto/create.category.dto';
 import { HotelCategory } from './hotel.category.enum';
-import { Raw } from 'typeorm/browser';
 
 @Injectable()
 export class CategoriesService {
@@ -23,18 +22,13 @@ export class CategoriesService {
 
   async isNameExist(name: string): Promise<boolean> {
     const category = await this.repository.findOneBy({ name: name });
-
     return !!category;
   }
 
   async findAll(name?: string): Promise<Category[]> {
-    const categories = this.repository.createQueryBuilder('category');
-    if (name) {
-      categories.where('LOWER(category.name) LIKE :name', {
-        name: `%${name.toLowerCase()}%`,
-      });
-    }
-    return await categories.getMany();
+    return await this.repository.find({
+      where: name ? { name: ILike(`${name}%`) } : {},
+    });
   }
 
   async findOneById(id: number): Promise<Category> {

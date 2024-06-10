@@ -62,3 +62,25 @@ export class FileDetailsS3Dto {
   @IsNumber()
   Bucket: string;
 }
+
+export class FileDetailsResult implements IFileDetails {
+  @ApiProperty()
+  @IsString()
+  originalName: string;
+
+  @ApiProperty()
+  @IsString()
+  fileName: string;
+
+  @ApiProperty()
+  @IsNumber()
+  size: number;
+
+  constructor(data: IFileDetails) {
+    if (data) {
+      this.originalName = data.originalName;
+      this.fileName = data.fileName;
+      this.size = data.size;
+    }
+  }
+}

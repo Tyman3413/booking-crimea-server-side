@@ -24,6 +24,7 @@ import { CurrentUser } from '../users/decorators/user.decorator';
 import { UserPayload } from '../auth/dto/user.payload';
 import { AuthGuard } from '@nestjs/passport';
 import { Hotel } from './hotel.entity';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -89,7 +90,7 @@ export class HotelsController {
 
   @ApiOperation({
     summary:
-      'Получить полный список отелей или список отелей конкретного гоорода',
+      'Получить полный список отелей или список отелей конкретного города',
   })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -97,6 +98,7 @@ export class HotelsController {
   @ApiQuery({ name: 'sort', required: false, type: String })
   @ApiQuery({ name: 'direction', required: false, type: String })
   @ApiResponse({ type: HotelListResult, isArray: true, status: 200 })
+  @Public()
   @Get()
   async getHotels(
     @Query('page') page: number = 1,

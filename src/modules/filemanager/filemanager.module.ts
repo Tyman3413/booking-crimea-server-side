@@ -8,9 +8,9 @@ import { FileManagerService } from './filemanager.service';
 
 @Module({
   imports: [
-    forwardRef(() => AuthModule),
     MulterModule.register({ dest: './uploads' }),
     TypeOrmModule.forFeature([FileEntity]),
+    forwardRef(() => AuthModule),
   ],
   controllers: [FileManagerController],
   providers: [FileManagerService],
