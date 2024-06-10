@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from './hotel.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { ReviewsService } from '../reviews/reviews.service';
@@ -21,6 +26,7 @@ export class HotelsService {
   constructor(
     @InjectRepository(Hotel)
     private readonly repository: Repository<Hotel>,
+    @Inject(forwardRef(() => ReviewsService))
     private readonly reviewsService: ReviewsService,
     private readonly termsService: TermsService,
     private readonly roomsService: RoomsService,
@@ -60,53 +66,6 @@ export class HotelsService {
     return await this.repository.save(result);
   }
 
-  async getHotelsByCityId(
-    page: number,
-    limit: number,
-    sort: string,
-    direction: string,
-    cityId?: number,
-  ): Promise<HotelListResult[]> {
-    const skip = limit * (page - 1);
-    const order: { [key: string]: 'ASC' | 'DESC' } = {};
-
-    // if (sort === 'popularity') {
-    //   order.hotel = direction as 'ASC' | 'DESC';
-    // } else if (sort === 'name') {
-    //   order.name = direction as 'ASC' | 'DESC';
-    // }
-
-    let queryBuilder = this.repository
-      .createQueryBuilder('hotel')
-      .leftJoinAndSelect('hotel.rooms', 'rooms')
-      .leftJoinAndSelect('hotel.conveniences', 'conveniences')
-      .leftJoinAndSelect('hotel.landlord', 'landlord')
-      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
-      .where('landlord.type = :type', { type: LandlordType.COMPANY });
-    if (cityId) {
-      queryBuilder = queryBuilder.where('hotel.cityId = :cityId', { cityId });
-    }
-    // queryBuilder.orderBy(order);
-
-    const hotels = await queryBuilder.skip(skip).take(limit).getMany();
-
-    const result = hotels.map(async (hotel) => ({
-      id: hotel.id,
-      name: hotel.name,
-      address: hotel.address,
-      img: hotel.image,
-      tempImages: hotel.hotelImages,
-      rooms: hotel.rooms.length,
-      totalPlaces: await this.countTotalPlaces(hotel.id),
-      conveniences: hotel.conveniences,
-      cheapestPrice: hotel.cheapestPrice,
-      availableHotels: hotels.length,
-      totalHotels: hotels.length,
-    }));
-
-    return Promise.all(result);
-  }
-
   async getHotelById(id: number): Promise<HotelDetailsResult> {
     const hotel = await this.repository.findOne({
       where: { id: id },
@@ -116,7 +75,7 @@ export class HotelsService {
         term: { registration: true, habitations: true },
         rooms: true,
         reviews: true,
-        hotelImages: true,
+        images: true,
       },
     });
 
@@ -143,7 +102,8 @@ export class HotelsService {
     return {
       id: hotel.id,
       title: hotel.name,
-      tempImages: hotel.hotelImages,
+      thumbnail: hotel.thumbnail,
+      images: hotel.images.map((image) => image.fileDTO),
       address: hotel.address,
       rating: hotel.rating,
       reviews: reviews.map((review) => ({
@@ -166,7 +126,7 @@ export class HotelsService {
       rooms: rooms.map((room) => ({
         id: room.id,
         title: room.title,
-        tempImages: room.roomImages,
+        images: room.images,
         subtitle: room.subtitle,
         description: room.description,
         beds: room.beds,
@@ -195,6 +155,53 @@ export class HotelsService {
     };
   }
 
+  async getHotelsByCityId(
+    page: number,
+    limit: number,
+    sort: string,
+    direction: string,
+    cityId?: number,
+  ): Promise<HotelListResult[]> {
+    const skip = limit * (page - 1);
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+
+    if (sort === 'popularity') {
+      order.rating = direction as 'ASC' | 'DESC';
+    } else if (sort === 'name') {
+      order.name = direction as 'ASC' | 'DESC';
+    }
+
+    const whereConditions: any = {
+      landlord: { type: LandlordType.COMPANY },
+    };
+    if (cityId) {
+      whereConditions.cityId = cityId;
+    }
+
+    const [hotels, total] = await this.findWithConditions(
+      whereConditions,
+      order,
+      skip,
+      limit,
+    );
+
+    return await Promise.all(
+      hotels.map(async (hotel) => ({
+        id: hotel.id,
+        name: hotel.name,
+        address: hotel.address,
+        thumbnail: hotel.thumbnail,
+        images: hotel.images.map((image) => image.fileDTO),
+        rooms: hotel.rooms.length,
+        totalPlaces: await this.countTotalPlaces(hotel.id),
+        conveniences: hotel.conveniences,
+        cheapestPrice: hotel.cheapestPrice,
+        availableHotels: hotels.length,
+        totalHotels: total,
+      })),
+    );
+  }
+
   async getPrivateHotels(
     page: number,
     limit: number,
@@ -205,39 +212,37 @@ export class HotelsService {
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
     if (sort === 'popularity') {
-      order.hotels = direction as 'ASC' | 'DESC';
+      order.rating = direction as 'ASC' | 'DESC';
     } else if (sort === 'name') {
       order.name = direction as 'ASC' | 'DESC';
     }
 
-    const queryBuilder = this.repository
-      .createQueryBuilder('hotel')
-      .leftJoinAndSelect('hotel.rooms', 'rooms')
-      .leftJoinAndSelect('hotel.conveniences', 'conveniences')
-      .leftJoinAndSelect('hotel.landlord', 'landlord')
-      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
-      .where('landlord.type IN (:...type)', {
-        type: [LandlordType.PRIVATE, LandlordType.OTHER],
-      })
-      .orderBy(order);
+    const whereConditions: any = {
+      landlord: { type: In([LandlordType.PRIVATE, LandlordType.OTHER]) },
+    };
 
-    const hotels = await queryBuilder.skip(skip).take(limit).getMany();
+    const [hotels, total] = await this.findWithConditions(
+      whereConditions,
+      order,
+      skip,
+      limit,
+    );
 
-    const result = hotels.map(async (hotel) => ({
-      id: hotel.id,
-      name: hotel.name,
-      address: hotel.address,
-      img: hotel.image,
-      tempImages: hotel.hotelImages,
-      rooms: hotel.rooms.length,
-      totalPlaces: await this.countTotalPlaces(hotel.id),
-      conveniences: hotel.conveniences,
-      cheapestPrice: hotel.cheapestPrice,
-      availableHotels: hotels.length,
-      totalHotels: hotels.length,
-    }));
-
-    return Promise.all(result);
+    return await Promise.all(
+      hotels.map(async (hotel) => ({
+        id: hotel.id,
+        name: hotel.name,
+        address: hotel.address,
+        thumbnail: hotel.thumbnail,
+        images: hotel.images.map((image) => image.fileDTO),
+        rooms: hotel.rooms.length,
+        totalPlaces: await this.countTotalPlaces(hotel.id),
+        conveniences: hotel.conveniences,
+        cheapestPrice: hotel.cheapestPrice,
+        availableHotels: hotels.length,
+        totalHotels: total,
+      })),
+    );
   }
 
   async findAvailableHotels(
@@ -261,8 +266,6 @@ export class HotelsService {
       order.rooms.map((room) => room.id),
     );
 
-    console.log(occupiedRoomIds);
-
     const queryBuilder = this.repository
       .createQueryBuilder('hotels')
       .leftJoinAndSelect('hotels.city', 'city')
@@ -285,8 +288,8 @@ export class HotelsService {
       id: hotel.id,
       name: hotel.name,
       address: hotel.address,
-      img: hotel.image,
-      tempImages: hotel.hotelImages,
+      thumbnail: hotel.thumbnail,
+      images: hotel.images.map((image) => image.fileDTO),
       rooms: hotel.rooms.length,
       totalPlaces: await this.countTotalPlaces(hotel.id),
       conveniences: hotel.conveniences,
@@ -305,5 +308,25 @@ export class HotelsService {
       totalPlaces += room.places;
     });
     return totalPlaces;
+  }
+
+  async findWithConditions(
+    conditions: any,
+    order: any,
+    skip: number,
+    take: number,
+  ) {
+    return await this.repository.findAndCount({
+      where: conditions,
+      relations: {
+        rooms: true,
+        conveniences: true,
+        landlord: true,
+        images: true,
+      },
+      order: order,
+      skip: skip,
+      take: take,
+    });
   }
 }

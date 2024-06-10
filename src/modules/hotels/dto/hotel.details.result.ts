@@ -4,7 +4,7 @@ import { ReviewDetailsResult } from '../../reviews/dto/review.details.result';
 import { TermsDetailsResult } from '../../terms/dto/terms.details.result';
 import { RoomDetailsResult } from '../../rooms/dto/room.details.result';
 import { HotelCoordsResult } from './hotel.coords.result';
-import { HotelImagesEntity } from '../../temp/hotel.images.entity';
+import { FileDetailsResult } from '../../filemanager/dto/file.dto';
 
 export class HotelDetailsResult {
   @ApiProperty({ example: 1 })
@@ -14,7 +14,10 @@ export class HotelDetailsResult {
   title: string;
 
   @ApiProperty()
-  tempImages: HotelImagesEntity[];
+  thumbnail: FileDetailsResult;
+
+  @ApiProperty()
+  images: FileDetailsResult[];
 
   @ApiProperty({ example: 'Севастополь - 99028, улица Ефремова, д.38' })
   address: string;

@@ -19,8 +19,4 @@ export class RoomImagesEntity extends BaseEntity {
 
   @Column({ nullable: true })
   roomId: number;
-
-  @ManyToOne(() => Room, (room) => room.roomImages)
-  @JoinColumn({ name: 'roomId' })
-  room: Room;
 }

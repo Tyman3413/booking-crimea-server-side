@@ -45,8 +45,8 @@ export class CitiesService {
     return cities.map((city) => {
       const hotelsResult: HotelsResult[] = city.hotels.map((hotel) => ({
         id: hotel.id,
-        img: hotel.image,
-        tempImages: hotel.hotelImages,
+        img: hotel.thumbnail,
+        thumbnail: hotel.thumbnail,
         name: hotel.name,
         address: hotel.address,
         cheapestPrice: hotel.cheapestPrice,
@@ -56,7 +56,7 @@ export class CitiesService {
         id: city.id,
         title: city.name,
         description: city.description,
-        img: city.photo,
+        img: city.image,
         hotels: hotelsResult,
         totalHotels: city.hotels.length,
       };

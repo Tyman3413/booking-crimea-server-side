@@ -18,7 +18,8 @@ import { Review } from '../reviews/review.entity';
 import { Order } from '../orders/order.entity';
 import { City } from '../cities/city.entity';
 import { Landlord } from '../landlords/entities/landlord.entity';
-import { HotelImagesEntity } from '../temp/hotel.images.entity';
+import { FileEntity } from '../filemanager/file.entity.';
+import { FileDetailsDto } from '../filemanager/dto/file.dto';
 
 @Entity('hotels')
 export class Hotel extends BaseEntity {
@@ -31,8 +32,8 @@ export class Hotel extends BaseEntity {
   @Column({ length: 500, nullable: true })
   description: string;
 
-  @Column({ length: 200, nullable: true })
-  image: string;
+  @Column({ type: 'jsonb', nullable: true })
+  thumbnail: FileDetailsDto;
 
   @Column({ nullable: true })
   address: string;
@@ -94,7 +95,7 @@ export class Hotel extends BaseEntity {
   @OneToMany(() => Order, (order) => order.hotel)
   orders: Order[];
 
-  // TODO move to S3
-  @OneToMany(() => HotelImagesEntity, (hotelImages) => hotelImages.hotel)
-  hotelImages: HotelImagesEntity[];
+  @ManyToMany(() => FileEntity)
+  @JoinTable({ name: 'hotels_images' })
+  images: FileEntity[];
 }

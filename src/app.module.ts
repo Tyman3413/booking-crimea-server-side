@@ -19,6 +19,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { TermsModule } from './modules/terms/terms.module';
 import { FileManagerModule } from './modules/filemanager/filemanager.module';
 import { TempModule } from './modules/temp/temp.module';
+import { ComplaintsModule } from './modules/complaints/complaints.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { TempModule } from './modules/temp/temp.module';
     AuthModule,
     CategoriesModule,
     CitiesModule,
+    ComplaintsModule,
     ConveniencesModule,
     CountriesModule,
     DatabaseModule,

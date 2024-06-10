@@ -11,6 +11,7 @@ import { User } from '../users/user.entity';
 import { Landlord } from '../landlords/entities/landlord.entity';
 import { Hotel } from '../hotels/hotel.entity';
 import { State } from '../states/state.entity';
+import { FileDetailsDto } from '../filemanager/dto/file.dto';
 
 @Entity('cities')
 export class City extends BaseEntity {
@@ -29,8 +30,8 @@ export class City extends BaseEntity {
   @Column({ nullable: true })
   population: number;
 
-  @Column({ nullable: true })
-  photo: string;
+  @Column({ type: 'jsonb', nullable: true })
+  image: FileDetailsDto;
 
   @Column({ nullable: true })
   stateId: number;

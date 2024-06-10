@@ -6,13 +6,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Hotel } from '../hotels/hotel.entity';
 import { Convenience } from '../conveniences/convenience.entity';
 import { Order } from '../orders/order.entity';
-import { RoomImagesEntity } from '../temp/room.images.entity';
+import { FileDetailsDto } from '../filemanager/dto/file.dto';
+import { FileEntity } from '../filemanager/file.entity.';
 
 @Entity('rooms')
 export class Room extends BaseEntity {
@@ -43,8 +43,8 @@ export class Room extends BaseEntity {
   @Column({ nullable: true })
   price: number;
 
-  @Column({ nullable: true })
-  photos: string; // TODO change to image array
+  @Column({ type: 'jsonb', nullable: true })
+  photos: FileDetailsDto;
 
   @Column({ name: 'hotel_id', nullable: true })
   hotelId: number;
@@ -60,7 +60,7 @@ export class Room extends BaseEntity {
   @JoinTable()
   conveniences: Convenience[];
 
-  // TODO move to S3
-  @OneToMany(() => RoomImagesEntity, (roomImages) => roomImages.room)
-  roomImages: RoomImagesEntity[];
+  @ManyToMany(() => FileEntity)
+  @JoinTable({ name: 'rooms_images' })
+  images: FileEntity[];
 }

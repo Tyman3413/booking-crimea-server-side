@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { HotelsResult } from '../../hotels/dto/hotels.result';
+import { FileDetailsDto } from '../../filemanager/dto/file.dto';
 
 export class CitiesResult {
   @ApiProperty({ example: 1 })
@@ -14,7 +15,7 @@ export class CitiesResult {
   description: string;
 
   @ApiProperty({ example: 'https://somesite.com/photo.jpg' })
-  img: string;
+  img: FileDetailsDto;
 
   @ApiProperty({ type: () => HotelsResult, isArray: true })
   hotels: HotelsResult[];
