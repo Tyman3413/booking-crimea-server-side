@@ -20,19 +20,13 @@
 <h3>Шаги по установке</h3>
 <ol>
     <li>Клонируйте репозиторий на ваш локальный компьютер:</li>
-    <code>
-        git clone https://github.com/Tyman3413/booking-crimea-server-side.git
-    </code>
+    <code>git clone https://github.com/Tyman3413/booking-crimea-server-side.git</code>
     <li>Установите зависимости:</li>
-    <code>
-        npm install
-    </code>
+    <code>npm install</code>
     <li>Создайте файл .env в корневом каталоге проекта и добавьте в него переменные на основе env.template</li>
     <li>Создайте базу данных PostgreSQL с именем, указанным в переменной DATABASE_NAME</li>
     <li>Запустите миграции для настройки базы данных:</li>
-    <code>
-        npm run migration:run
-    </code>
+    <code>npm run migration:run</code>
 </ol>
 
 <h2 style="text-align: center">Запуск проекта</h2>
