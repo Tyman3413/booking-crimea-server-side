@@ -53,7 +53,7 @@ export class OrdersController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Get('my')
+  @Post('/my')
   async getOrdersForCurrentUser(
     @CurrentUser() user: UserPayload,
   ): Promise<Order[]> {
