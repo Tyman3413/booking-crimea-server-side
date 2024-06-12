@@ -16,7 +16,7 @@ export class RoomsService {
   async getByHotelId(hotelId: number): Promise<Room[]> {
     return await this.repository.find({
       where: { hotelId: hotelId },
-      relations: { conveniences: true, roomImages: true },
+      relations: { conveniences: true, images: true },
     });
   }
 
