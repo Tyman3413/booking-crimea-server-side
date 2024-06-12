@@ -1,5 +1,5 @@
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from '../users.service';
 import { User } from '../user.entity';
 import { UpdateProfileDto } from '../dto/update.profile.dto';

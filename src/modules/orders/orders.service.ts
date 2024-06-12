@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
 import {
   DataSource,
+  In,
   LessThanOrEqual,
   MoreThanOrEqual,
   Repository,
@@ -31,7 +32,7 @@ export class OrdersService {
     return await this.repository.find({
       where: [
         {
-          status: OrderStatus.PAID,
+          status: In([OrderStatus.PAID, OrderStatus.WAITING_FOR_PAYMENT]),
           checkIn: LessThanOrEqual(checkOut),
           checkOut: MoreThanOrEqual(checkIn),
         },
