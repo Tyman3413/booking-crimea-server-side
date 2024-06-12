@@ -20,6 +20,7 @@ import { CreateHotelDto } from './dto/create.hotel.dto';
 import { ConveniencesService } from '../conveniences/conveniences.service';
 import { Convenience } from '../conveniences/convenience.entity';
 import { UserPayload } from '../auth/dto/user.payload';
+import { UpdateHotelDto } from './dto/update.hotel.dto';
 
 @Injectable()
 export class HotelsService {
@@ -29,7 +30,9 @@ export class HotelsService {
     @Inject(forwardRef(() => ReviewsService))
     private readonly reviewsService: ReviewsService,
     private readonly termsService: TermsService,
+    @Inject(forwardRef(() => RoomsService))
     private readonly roomsService: RoomsService,
+    @Inject(forwardRef(() => OrdersService))
     private readonly ordersService: OrdersService,
     private readonly conveniencesService: ConveniencesService,
   ) {}
@@ -64,6 +67,54 @@ export class HotelsService {
 
     const result = this.repository.create(hotel);
     return await this.repository.save(result);
+  }
+
+  async update(
+    id: number,
+    user: UserPayload,
+    body: UpdateHotelDto,
+  ): Promise<Hotel> {
+    const hotel = await this.repository.findOne({
+      where: { id: id },
+      relations: { conveniences: true },
+    });
+    if (!hotel) {
+      throw new NotFoundException('Отель не найден');
+    }
+
+    if (body.name) {
+      hotel.name = body.name;
+    }
+    if (body.address) {
+      hotel.address = body.address;
+    }
+    if (body.price) {
+      hotel.cheapestPrice = body.price;
+    }
+    if (body.description) {
+      hotel.description = body.description;
+    }
+    if (body.conveniences && body.conveniences.length > 0) {
+      hotel.conveniences = await this.conveniencesService.findAllByIds(
+        body.conveniences,
+      );
+    }
+    if (body.newConvenience) {
+      const newConvenienceNames = body.newConvenience.split(', ');
+
+      const newConveniences = await Promise.all(
+        newConvenienceNames.map(async (name) => {
+          const convenience = new Convenience();
+          convenience.name = name;
+          convenience.userId = user.id;
+          return await this.conveniencesService.create(convenience);
+        }),
+      );
+
+      hotel.conveniences = [...(hotel.conveniences || []), ...newConveniences];
+    }
+
+    return await this.repository.save(hotel);
   }
 
   async getHotelById(id: number): Promise<HotelDetailsResult> {
