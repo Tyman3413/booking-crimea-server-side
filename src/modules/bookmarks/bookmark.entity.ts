@@ -25,7 +25,7 @@ export class Bookmark extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToOne(() => Hotel)
+  @ManyToOne(() => Hotel)
   @JoinColumn({ name: 'hotel_id' })
   hotel: Hotel;
 }
