@@ -21,10 +21,11 @@ import { HotelDetailsResult } from './dto/hotel.details.result';
 import { FindAvailableHotelsDto } from './dto/find.available.hotels.dto';
 import { CreateHotelDto } from './dto/create.hotel.dto';
 import { CurrentUser } from '../users/decorators/user.decorator';
-import { UserPayload } from '../auth/dto/user.payload';
+import { isLandlord, UserPayload } from '../auth/dto/user.payload';
 import { AuthGuard } from '@nestjs/passport';
 import { Hotel } from './hotel.entity';
 import { Public } from '../common/decorators/public.decorator';
+import { AccessRightsException } from '../common/exceoptions/access.rights.exception';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -40,7 +41,11 @@ export class HotelsController {
     @CurrentUser() user: UserPayload,
     @Body() dto: CreateHotelDto,
   ): Promise<Hotel> {
-    return await this.hotelsService.create(user, dto);
+    if (isLandlord(user)) {
+      return await this.hotelsService.create(user, dto);
+    } else {
+      throw new AccessRightsException();
+    }
   }
 
   @ApiOperation({ summary: 'Поиск отелей, подходящих под намеченную дату' })
@@ -53,7 +58,7 @@ export class HotelsController {
   async findAvailableHotels(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 8,
-    @Query('sort') sort: string = 'population',
+    @Query('sort') sort: string = 'popularity',
     @Query('direction') direction: string = 'DESC',
     @Body() findBody: FindAvailableHotelsDto,
   ): Promise<HotelListResult[]> {
@@ -77,7 +82,7 @@ export class HotelsController {
   async getPrivateHotels(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 8,
-    @Query('sort') sort: string = 'population',
+    @Query('sort') sort: string = 'popularity',
     @Query('direction') direction: string = 'DESC',
   ): Promise<HotelListResult[]> {
     return await this.hotelsService.getPrivateHotels(
@@ -104,7 +109,7 @@ export class HotelsController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 8,
     @Query('cityId') cityId?: number,
-    @Query('sort') sort: string = 'name',
+    @Query('sort') sort: string = 'popularity',
     @Query('direction') direction: string = 'DESC',
   ): Promise<HotelListResult[]> {
     return await this.hotelsService.getHotelsByCityId(

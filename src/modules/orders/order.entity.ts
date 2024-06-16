@@ -23,6 +23,12 @@ export class Order extends BaseEntity {
   @Column({ type: 'float', default: 0.0, nullable: false })
   price: number;
 
+  @Column({ type: 'boolean', default: false, nullable: true })
+  prepayment: boolean;
+
+  @Column({ type: 'float', default: 0.0, nullable: true })
+  remains: number;
+
   @Column({ name: 'check_in', type: 'date', nullable: true })
   checkIn: Date;
 

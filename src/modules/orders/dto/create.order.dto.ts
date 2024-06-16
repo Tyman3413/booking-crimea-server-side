@@ -37,6 +37,10 @@ export class CreateOrderDto {
   email: string;
 
   @ApiProperty()
+  @IsNotEmpty()
+  prepayment: boolean;
+
+  @ApiProperty()
   @IsDate()
   @IsNotEmpty()
   checkIn: Date;
