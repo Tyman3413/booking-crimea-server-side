@@ -383,6 +383,11 @@ export class HotelsService {
   async findByIds(ids: number[]): Promise<Hotel[]> {
     return await this.repository.find({
       where: { id: In(ids) },
+      relations: {
+        hotelImages: true,
+        rooms: true,
+        conveniences: true,
+      },
     });
   }
 }
