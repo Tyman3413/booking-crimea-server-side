@@ -41,12 +41,10 @@ export class CreateOrderDto {
   prepayment: boolean;
 
   @ApiProperty()
-  @IsDate()
   @IsNotEmpty()
   checkIn: Date;
 
   @ApiProperty()
-  @IsDate()
   @IsNotEmpty()
   checkOut: Date;
 
