@@ -21,6 +21,7 @@ import { ConveniencesService } from '../conveniences/conveniences.service';
 import { Convenience } from '../conveniences/convenience.entity';
 import { UserPayload } from '../auth/dto/user.payload';
 import { UpdateHotelDto } from './dto/update.hotel.dto';
+import { BookmarksService } from '../bookmarks/bookmarks.service';
 
 @Injectable()
 export class HotelsService {
@@ -35,6 +36,8 @@ export class HotelsService {
     @Inject(forwardRef(() => OrdersService))
     private readonly ordersService: OrdersService,
     private readonly conveniencesService: ConveniencesService,
+    @Inject(forwardRef(() => BookmarksService))
+    private readonly bookmarksService: BookmarksService,
   ) {}
 
   async create(user: UserPayload, body: CreateHotelDto) {
@@ -164,7 +167,11 @@ export class HotelsService {
     return Promise.all(result);
   }
 
-  async getHotelById(id: number): Promise<HotelDetailsResult> {
+  async getHotelById(
+    id: number,
+    user?: UserPayload,
+  ): Promise<HotelDetailsResult> {
+    let isBookmarkExists = false;
     const hotel = await this.repository.findOne({
       where: { id: id },
       relations: {
@@ -184,6 +191,12 @@ export class HotelsService {
     const reviews = await this.reviewsService.getReviewsByHotelId(hotel.id);
     const terms = await this.termsService.getByHotelId(hotel.id);
     const rooms = await this.roomsService.getByHotelId(hotel.id);
+
+    if (user) {
+      const bookmark =
+        (await this.bookmarksService.isBookmarkExist(user.id, id)) || null;
+      isBookmarkExists = !!bookmark;
+    }
 
     const termDetails: TermsDetailsResult = {
       id: terms.id,
@@ -249,6 +262,7 @@ export class HotelsService {
         longitude: hotel.longitude,
         latitude: hotel.latitude,
       },
+      isBookmark: isBookmarkExists ? isBookmarkExists : false,
     };
   }
 
