@@ -11,6 +11,7 @@ import { User } from '../users/user.entity';
 import { CreateUserDto } from '../users/dto/create.user.dto';
 import { LoginResult } from './dto/login.result';
 import * as bcrypt from 'bcrypt';
+import { EmailsService } from '../emails/emails.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
+    private readonly emailsService: EmailsService,
   ) {}
 
   async validateUser(user: LoginUserDto): Promise<User | undefined> {
@@ -60,6 +62,7 @@ export class AuthService {
         password: hashedPassword,
         role: user.role,
       });
+      await this.emailsService.sendMessageUserRegistered(newUser);
       const payload = this.getJwtPayload(newUser);
       return {
         access_token: this.jwtService.sign(payload),

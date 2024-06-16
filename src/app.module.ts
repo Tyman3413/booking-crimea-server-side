@@ -19,6 +19,8 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { TermsModule } from './modules/terms/terms.module';
 import { FileManagerModule } from './modules/filemanager/filemanager.module';
 import { TempModule } from './modules/temp/temp.module';
+import { EmailsModule } from './modules/emails/emails.module';
+import { BookmarksModule } from './modules/bookmarks/bookmarks.module';
 
 @Module({
   imports: [
@@ -44,11 +46,13 @@ import { TempModule } from './modules/temp/temp.module';
     }),
     /* App */
     AuthModule,
+    BookmarksModule,
     CategoriesModule,
     CitiesModule,
     ConveniencesModule,
     CountriesModule,
     DatabaseModule,
+    EmailsModule,
     FileManagerModule,
     HabitationsModule,
     HotelsModule,

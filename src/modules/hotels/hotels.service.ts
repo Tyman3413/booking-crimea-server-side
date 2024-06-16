@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from './hotel.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { ReviewsService } from '../reviews/reviews.service';
@@ -127,11 +127,11 @@ export class HotelsService {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
-    // if (sort === 'popularity') {
-    //   order.hotel = direction as 'ASC' | 'DESC';
-    // } else if (sort === 'name') {
-    //   order.name = direction as 'ASC' | 'DESC';
-    // }
+    if (sort === 'popularity') {
+      order['hotel.rating'] = direction as 'ASC' | 'DESC';
+    } else if (sort === 'name') {
+      order['hotel.name'] = direction as 'ASC' | 'DESC';
+    }
 
     let queryBuilder = this.repository
       .createQueryBuilder('hotel')
@@ -143,7 +143,7 @@ export class HotelsService {
     if (cityId) {
       queryBuilder = queryBuilder.where('hotel.cityId = :cityId', { cityId });
     }
-    // queryBuilder.orderBy(order);
+    queryBuilder.orderBy(order);
 
     const hotels = await queryBuilder.skip(skip).take(limit).getMany();
 
@@ -262,9 +262,9 @@ export class HotelsService {
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
     if (sort === 'popularity') {
-      order.hotels = direction as 'ASC' | 'DESC';
+      order['hotel.rating'] = direction as 'ASC' | 'DESC';
     } else if (sort === 'name') {
-      order.name = direction as 'ASC' | 'DESC';
+      order['hotel.name'] = direction as 'ASC' | 'DESC';
     }
 
     const queryBuilder = this.repository
@@ -360,5 +360,15 @@ export class HotelsService {
       totalPlaces += room.places;
     });
     return totalPlaces;
+  }
+
+  async findOne(id: number): Promise<Hotel> {
+    return await this.repository.findOne({ where: { id: id } });
+  }
+
+  async findByIds(ids: number[]): Promise<Hotel[]> {
+    return await this.repository.find({
+      where: { id: In(ids) },
+    });
   }
 }

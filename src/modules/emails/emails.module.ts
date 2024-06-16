@@ -2,25 +2,23 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import * as path from 'node:path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import {
-  AcceptLanguageResolver,
-  CookieResolver,
-  HeaderResolver,
-  I18nModule,
-  QueryResolver,
-} from 'nestjs-i18n';
+import { ConfigService } from '@nestjs/config';
+import { EmailsService } from './emails.service';
 
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      useFactory: () => ({
+      useFactory: (configService: ConfigService) => ({
         transport: {
-          host: 'localhost',
-          port: 1025,
+          host: 'smtp.gmail.com',
+          port: 587,
           auth: {
-            user: 'project.1',
-            pass: 'secret.1',
+            user: configService.get<string>('SMTP_USER'),
+            pass: configService.get<string>('SMTP_PASS'),
           },
+        },
+        defaults: {
+          from: '"BookingLounge" <booking-crimea@gmail.com>',
         },
         template: {
           dir: path.join(__dirname, '../../resources/templates/emails'),
@@ -38,20 +36,10 @@ import {
           },
         },
       }),
-    }),
-    I18nModule.forRoot({
-      fallbackLanguage: 'en',
-      loaderOptions: {
-        path: path.join(__dirname, '../../resources/i18n/'),
-        watch: true,
-      },
-      resolvers: [
-        { use: QueryResolver, options: ['lang', 'locale', 'l'] },
-        new HeaderResolver(['x-custom-lang']),
-        AcceptLanguageResolver,
-        new CookieResolver(['lang', 'locale', 'l']),
-      ],
+      inject: [ConfigService],
     }),
   ],
+  providers: [EmailsService],
+  exports: [EmailsService],
 })
 export class EmailsModule {}

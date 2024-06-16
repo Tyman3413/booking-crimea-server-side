@@ -18,6 +18,7 @@ import { UtilsService } from '../common/utils/utils.service';
 import { UpdateOrderDto } from './dto/update.order.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { User } from '../users/user.entity';
+import { HotelsService } from '../hotels/hotels.service';
 
 @Injectable()
 export class OrdersService {
@@ -25,6 +26,7 @@ export class OrdersService {
     @InjectRepository(Order)
     private readonly repository: Repository<Order>,
     private readonly roomsService: RoomsService,
+    private readonly hotelsService: HotelsService,
     private dataSource: DataSource,
   ) {}
 
@@ -78,6 +80,7 @@ export class OrdersService {
     }
 
     const room = await this.roomsService.getById(order.roomId);
+    const hotel = await this.hotelsService.getHotelById(room.hotelId);
     if (!room) {
       throw new BadRequestException('Номер не найден');
     }
@@ -87,8 +90,22 @@ export class OrdersService {
       order.checkOut,
     );
 
+    let totalPrice: number;
+    let moneyRemains = 0;
+
+    if (order.prepayment) {
+      totalPrice =
+        room.price * daysCount * (hotel.rules.prepaymentPercentage / 100);
+      moneyRemains =
+        room.price * daysCount + room.price * daysCount * 0.01 - totalPrice;
+    } else {
+      totalPrice = room.price * daysCount + room.price * daysCount * 0.01;
+    }
+
     const newOrder = new Order();
-    newOrder.price = daysCount * room.price;
+    newOrder.price = totalPrice;
+    newOrder.prepayment = order.prepayment;
+    newOrder.remains = moneyRemains;
     newOrder.checkIn = order.checkIn;
     newOrder.checkOut = order.checkOut;
     newOrder.nightsCount = daysCount;
@@ -98,7 +115,7 @@ export class OrdersService {
     newOrder.phone = order.phone;
     newOrder.email = order.email;
     newOrder.guests = order.guests;
-    newOrder.status = OrderStatus.WAITING_FOR_PAYMENT;
+    newOrder.status = OrderStatus.PAID;
     newOrder.rooms = [room];
     newOrder.user = user;
 
