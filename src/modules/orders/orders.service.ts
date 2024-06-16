@@ -84,6 +84,7 @@ export class OrdersService {
     if (!room) {
       throw new BadRequestException('Номер не найден');
     }
+    const existingHotel = await this.hotelsService.findOne(hotel.id);
 
     const daysCount = UtilsService.differenceInDays(
       order.checkIn,
@@ -116,6 +117,7 @@ export class OrdersService {
     newOrder.email = order.email;
     newOrder.guests = order.guests;
     newOrder.status = OrderStatus.PAID;
+    newOrder.hotel = existingHotel;
     newOrder.rooms = [room];
     newOrder.user = user;
 
@@ -179,6 +181,10 @@ export class OrdersService {
   async getByUser(userId: number): Promise<Order[]> {
     return await this.repository.find({
       where: { userId: userId },
+      relations: {
+        hotel: true,
+        rooms: true,
+      },
     });
   }
 }
