@@ -34,7 +34,7 @@ export class BookmarksService {
       hotelId,
     );
     if (existingBookmark) {
-      throw new ConflictException('Загладка уже добавлена');
+      return await this.delete(existingBookmark);
     }
     const bookmark = new Bookmark();
     bookmark.hotelId = hotelId;
@@ -72,5 +72,9 @@ export class BookmarksService {
     return await this.repository.findOne({
       where: { hotelId: hotelId, userId: userId },
     });
+  }
+
+  async delete(bookmark: Bookmark): Promise<Bookmark> {
+    return await this.repository.remove(bookmark);
   }
 }
