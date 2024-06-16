@@ -26,6 +26,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Hotel } from './hotel.entity';
 import { Public } from '../common/decorators/public.decorator';
 import { AccessRightsException } from '../common/exceoptions/access.rights.exception';
+import { OptionalGuard } from '../auth/guards/optional.guard';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -125,8 +126,13 @@ export class HotelsController {
     summary: 'Получить информацию об определенном отеле по его ID',
   })
   @ApiResponse({ type: HotelDetailsResult, isArray: false, status: 200 })
+  @UseGuards(OptionalGuard)
   @Get(':id')
-  async getHotelById(@Param('id') id: number): Promise<HotelDetailsResult> {
-    return await this.hotelsService.getHotelById(id);
+  async getHotelById(
+    @Param('id') id: number,
+    @CurrentUser() user?: UserPayload,
+  ): Promise<HotelDetailsResult> {
+    console.log(user);
+    return await this.hotelsService.getHotelById(id, user);
   }
 }

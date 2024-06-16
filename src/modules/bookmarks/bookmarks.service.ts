@@ -1,5 +1,6 @@
 import {
-  ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ export class BookmarksService {
     @InjectRepository(Bookmark)
     private readonly repository: Repository<Bookmark>,
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => HotelsService))
     private readonly hotelsService: HotelsService,
   ) {}
 

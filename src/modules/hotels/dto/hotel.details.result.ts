@@ -45,4 +45,7 @@ export class HotelDetailsResult {
 
   @ApiProperty({ type: HotelCoordsResult })
   coords: HotelCoordsResult;
+
+  @ApiProperty()
+  isBookmark?: boolean;
 }

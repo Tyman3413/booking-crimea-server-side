@@ -9,6 +9,7 @@ import { RoomsModule } from '../rooms/rooms.module';
 import { OrdersModule } from '../orders/orders.module';
 import { ConveniencesModule } from '../conveniences/conveniences.module';
 import { HotelsService } from './hotels.service';
+import { BookmarksModule } from '../bookmarks/bookmarks.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HotelsService } from './hotels.service';
     forwardRef(() => OrdersModule),
     forwardRef(() => ConveniencesModule),
     forwardRef(() => CategoriesModule),
+    forwardRef(() => BookmarksModule),
   ],
   controllers: [HotelsController],
   providers: [HotelsService],
