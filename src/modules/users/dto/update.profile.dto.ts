@@ -34,4 +34,8 @@ export class UpdateProfileDto {
   @IsOptional()
   @ApiProperty()
   zipcode?: string;
+
+  @IsOptional()
+  @ApiProperty()
+  passport?: string;
 }

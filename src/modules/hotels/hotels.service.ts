@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from './hotel.entity';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { ReviewsService } from '../reviews/reviews.service';
@@ -131,24 +131,28 @@ export class HotelsService {
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
     if (sort === 'popularity') {
-      order['hotel.rating'] = direction as 'ASC' | 'DESC';
+      order['rating'] = direction as 'ASC' | 'DESC';
     } else if (sort === 'name') {
-      order['hotel.name'] = direction as 'ASC' | 'DESC';
+      order['name'] = direction as 'ASC' | 'DESC';
     }
 
-    let queryBuilder = this.repository
-      .createQueryBuilder('hotel')
-      .leftJoinAndSelect('hotel.rooms', 'rooms')
-      .leftJoinAndSelect('hotel.conveniences', 'conveniences')
-      .leftJoinAndSelect('hotel.landlord', 'landlord')
-      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
-      .where('landlord.type = :type', { type: LandlordType.COMPANY });
+    const where: any = { landlord: { type: LandlordType.COMPANY } };
     if (cityId) {
-      queryBuilder = queryBuilder.where('hotel.cityId = :cityId', { cityId });
+      where.cityId = cityId;
     }
-    queryBuilder.orderBy(order);
 
-    const hotels = await queryBuilder.skip(skip).take(limit).getMany();
+    const [hotels, total] = await this.repository.findAndCount({
+      where: where,
+      relations: {
+        rooms: true,
+        conveniences: true,
+        landlord: true,
+        hotelImages: true,
+      },
+      order: order,
+      skip: skip,
+      take: limit,
+    });
 
     const result = hotels.map(async (hotel) => ({
       id: hotel.id,
@@ -161,7 +165,7 @@ export class HotelsService {
       conveniences: hotel.conveniences,
       cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
-      totalHotels: hotels.length,
+      totalHotels: total,
     }));
 
     return Promise.all(result);
@@ -272,28 +276,36 @@ export class HotelsService {
     limit: number,
     sort: string,
     direction: string,
+    cityId?: number,
   ): Promise<HotelListResult[]> {
     const skip = limit * (page - 1);
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
 
     if (sort === 'popularity') {
-      order['hotel.rating'] = direction as 'ASC' | 'DESC';
+      order['rating'] = direction as 'ASC' | 'DESC';
     } else if (sort === 'name') {
-      order['hotel.name'] = direction as 'ASC' | 'DESC';
+      order['name'] = direction as 'ASC' | 'DESC';
     }
 
-    const queryBuilder = this.repository
-      .createQueryBuilder('hotel')
-      .leftJoinAndSelect('hotel.rooms', 'rooms')
-      .leftJoinAndSelect('hotel.conveniences', 'conveniences')
-      .leftJoinAndSelect('hotel.landlord', 'landlord')
-      .leftJoinAndSelect('hotel.hotelImages', 'hotelImages')
-      .where('landlord.type IN (:...type)', {
-        type: [LandlordType.PRIVATE, LandlordType.OTHER],
-      })
-      .orderBy(order);
+    const where: any = {
+      landlord: { type: In([LandlordType.PRIVATE, LandlordType.OTHER]) },
+    };
+    if (cityId) {
+      where.cityId = cityId;
+    }
 
-    const hotels = await queryBuilder.skip(skip).take(limit).getMany();
+    const [hotels, total] = await this.repository.findAndCount({
+      where: where,
+      relations: {
+        rooms: true,
+        conveniences: true,
+        landlord: true,
+        hotelImages: true,
+      },
+      order: order,
+      skip: skip,
+      take: limit,
+    });
 
     const result = hotels.map(async (hotel) => ({
       id: hotel.id,
@@ -306,7 +318,7 @@ export class HotelsService {
       conveniences: hotel.conveniences,
       cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
-      totalHotels: hotels.length,
+      totalHotels: total,
     }));
 
     return Promise.all(result);
@@ -333,23 +345,34 @@ export class HotelsService {
       order.rooms.map((room) => room.id),
     );
 
-    const queryBuilder = this.repository
-      .createQueryBuilder('hotels')
-      .leftJoinAndSelect('hotels.city', 'city')
-      .leftJoinAndSelect('hotels.rooms', 'rooms')
-      .leftJoinAndSelect('hotels.conveniences', 'conveniences')
-      .leftJoinAndSelect('hotels.orders', 'orders')
-      .leftJoinAndSelect('hotels.hotelImages', 'hotelImages')
-      .where('hotels.cityId = :cityId', { cityId: cityId })
-      .andWhere('rooms.places >= :guests', { guests: guests });
-
-    if (occupiedRoomIds.length > 0) {
-      queryBuilder.andWhere('rooms.id NOT IN (:...ids)', {
-        ids: occupiedRoomIds,
-      });
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+    if (sort === 'popularity') {
+      order['rating'] = direction as 'ASC' | 'DESC';
+    } else if (sort === 'name') {
+      order['name'] = direction as 'ASC' | 'DESC';
     }
 
-    const hotels = await queryBuilder.skip(skip).take(limit).getMany();
+    const where: any = {
+      cityId,
+      rooms: {
+        places: guests,
+        id: occupiedRoomIds.length > 0 ? Not(In(occupiedRoomIds)) : undefined,
+      },
+    };
+
+    const [hotels, total] = await this.repository.findAndCount({
+      where: where,
+      relations: {
+        city: true,
+        rooms: true,
+        conveniences: true,
+        orders: true,
+        hotelImages: true,
+      },
+      order: order,
+      skip: skip,
+      take: limit,
+    });
 
     const result = hotels.map(async (hotel) => ({
       id: hotel.id,
@@ -362,7 +385,7 @@ export class HotelsService {
       conveniences: hotel.conveniences,
       cheapestPrice: hotel.cheapestPrice,
       availableHotels: hotels.length,
-      totalHotels: hotels.length,
+      totalHotels: total,
     }));
 
     return Promise.all(result);

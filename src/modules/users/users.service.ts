@@ -5,12 +5,15 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateProfileDto } from './dto/update.profile.dto';
 import { UserDetailsResult } from './dto/user.details.result';
+import { LandlordsService } from '../landlords/landlords.service';
+import { UserRole } from './enums/user.role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
+    private readonly landlordsService: LandlordsService,
   ) {}
 
   // CRUD operations ✏️
@@ -19,7 +22,15 @@ export class UsersService {
   }
 
   async updateProfile(user: User, data: UpdateProfileDto): Promise<User> {
-    await this.repository.update(user.id, data);
+    if (data.passport) {
+      await this.landlordsService.createByUser(user);
+      if (user.role !== UserRole.ADMIN) {
+        user.role = UserRole.LANDLORD;
+      } else {
+        user.role = user.role;
+      }
+    }
+    await this.repository.update(user.id, { ...data, role: user.role });
     return await this.findOneByEmail(user.email);
   }
 

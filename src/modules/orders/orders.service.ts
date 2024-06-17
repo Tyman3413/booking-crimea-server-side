@@ -19,6 +19,7 @@ import { UpdateOrderDto } from './dto/update.order.dto';
 import { RoomsService } from '../rooms/rooms.service';
 import { User } from '../users/user.entity';
 import { HotelsService } from '../hotels/hotels.service';
+import { EmailsService } from '../emails/emails.service';
 
 @Injectable()
 export class OrdersService {
@@ -27,6 +28,7 @@ export class OrdersService {
     private readonly repository: Repository<Order>,
     private readonly roomsService: RoomsService,
     private readonly hotelsService: HotelsService,
+    private readonly emailsService: EmailsService,
     private dataSource: DataSource,
   ) {}
 

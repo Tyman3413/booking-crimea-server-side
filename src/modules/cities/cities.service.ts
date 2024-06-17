@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { City } from './city.entity';
 import { CitiesResult } from './dto/cities.result';
 import { HotelsResult } from '../hotels/dto/hotels.result';
@@ -28,19 +28,23 @@ export class CitiesService {
   ): Promise<CitiesResult[]> {
     const skip = limit * (page - 1);
 
-    const queryBuilder = this.repository
-      .createQueryBuilder('city')
-      .leftJoinAndSelect('city.hotels', 'hotels')
-      .leftJoinAndSelect('hotels.hotelImages', 'hotelImages')
-      .orderBy(`city.${sort}`, direction as 'ASC' | 'DESC');
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+    order[sort] = direction as 'ASC' | 'DESC';
 
+    const where: any = {};
     if (search) {
-      queryBuilder.where('LOWER(city.name) LIKE :search', {
-        search: `${search.toLowerCase()}%`,
-      });
+      where.name = Like(`${search}%`);
     }
 
-    const cities = await queryBuilder.skip(skip).take(limit).getMany();
+    const cities = await this.repository.find({
+      where,
+      relations: {
+        hotels: { hotelImages: true },
+      },
+      order,
+      skip,
+      take: limit,
+    });
 
     return cities.map((city) => {
       const hotelsResult: HotelsResult[] = city.hotels.map((hotel) => ({

@@ -6,6 +6,7 @@ import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { UsersModule } from '../users/users.module';
 import { HotelsModule } from '../hotels/hotels.module';
+import { EmailsModule } from '../emails/emails.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { HotelsModule } from '../hotels/hotels.module';
     forwardRef(() => RoomsModule),
     forwardRef(() => UsersModule),
     forwardRef(() => HotelsModule),
+    forwardRef(() => EmailsModule),
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
