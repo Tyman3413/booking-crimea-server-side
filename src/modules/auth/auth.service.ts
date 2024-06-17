@@ -42,6 +42,7 @@ export class AuthService {
       const payload = this.getJwtPayload(existingUser);
       return {
         access_token: this.jwtService.sign(payload),
+        role: existingUser.role,
       };
     } catch (error) {
       this.logger.error(`Ошибка аутентификации: ${error.message}`);
@@ -62,10 +63,11 @@ export class AuthService {
         password: hashedPassword,
         role: user.role,
       });
-      await this.emailsService.sendMessageUserRegistered(newUser);
+      // await this.emailsService.sendMessageUserRegistered(newUser);
       const payload = this.getJwtPayload(newUser);
       return {
         access_token: this.jwtService.sign(payload),
+        role: newUser.role,
       };
     } catch (error) {
       this.logger.error(`Ошибка регистрации: ${error.message}`);

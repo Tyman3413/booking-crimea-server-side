@@ -79,18 +79,21 @@ export class HotelsController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'sort', required: false, type: String })
   @ApiQuery({ name: 'direction', required: false, type: String })
+  @ApiQuery({ name: 'cityId', required: false, type: Number })
   @Get('apartments')
   async getPrivateHotels(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 8,
     @Query('sort') sort: string = 'popularity',
     @Query('direction') direction: string = 'DESC',
+    @Query('cityId') cityId?: number,
   ): Promise<HotelListResult[]> {
     return await this.hotelsService.getPrivateHotels(
       page,
       limit,
       sort,
       direction,
+      cityId,
     );
   }
 
