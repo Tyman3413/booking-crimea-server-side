@@ -214,6 +214,7 @@ export class HotelsService {
       id: hotel.id,
       title: hotel.name,
       tempImages: hotel.hotelImages,
+      file: hotel.thumbnail,
       address: hotel.address,
       rating: hotel.rating,
       reviews: reviews.map((review) => ({
