@@ -19,6 +19,7 @@ import { Order } from '../orders/order.entity';
 import { City } from '../cities/city.entity';
 import { Landlord } from '../landlords/entities/landlord.entity';
 import { HotelImagesEntity } from '../temp/hotel.images.entity';
+import { FileDetailsDto } from '../filemanager/dto/file.dto';
 
 @Entity('hotels')
 export class Hotel extends BaseEntity {
@@ -33,6 +34,12 @@ export class Hotel extends BaseEntity {
 
   @Column({ length: 200, nullable: true })
   image: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  thumbnail: FileDetailsDto;
+
+  @Column({ type: 'jsonb', nullable: true })
+  files: FileDetailsDto[];
 
   @Column({ nullable: true })
   address: string;

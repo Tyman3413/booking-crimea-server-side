@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Convenience } from '../conveniences/convenience.entity';
-import { FileDetailsDto } from '../filemanager/dto/file.dto';
 import { HotelImagesEntity } from '../temp/hotel.images.entity';
 
 export class HotelListResult {
