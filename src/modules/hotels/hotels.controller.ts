@@ -43,7 +43,7 @@ export class HotelsController {
   async createAdvertisement(
     @CurrentUser() user: UserPayload,
     @Body() dto: CreateHotelDto,
-  ): Promise<Hotel> {
+  ) {
     if (isLandlord(user) || isAdmin(user)) {
       return await this.hotelsService.create(user, dto);
     } else {
