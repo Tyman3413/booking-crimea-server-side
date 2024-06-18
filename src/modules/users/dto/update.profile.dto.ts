@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { UserGender } from '../enums/user.gender.enum';
+import { CreatePassportDto } from './create.passport.dto';
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -25,10 +26,6 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @ApiProperty()
-  countryId?: number;
-
-  @IsOptional()
-  @ApiProperty()
   address?: string;
 
   @IsOptional()
@@ -37,5 +34,5 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @ApiProperty()
-  passport?: string;
+  passport?: CreatePassportDto;
 }

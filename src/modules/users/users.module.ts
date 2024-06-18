@@ -6,10 +6,11 @@ import { UsersService } from './users.service';
 import { ProfilesController } from './profile/profiles.controller';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { LandlordsModule } from '../landlords/landlords.module';
+import { PassportEntity } from './passport.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, PassportEntity]),
     forwardRef(() => ReviewsModule),
     forwardRef(() => LandlordsModule),
   ],

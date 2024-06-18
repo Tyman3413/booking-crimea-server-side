@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserGender } from '../enums/user.gender.enum';
 import { Country } from '../../countries/country.entity';
+import { PassportResult } from './passport.result';
 
 export class UserDetailsResult {
   @ApiProperty()
@@ -40,7 +41,7 @@ export class UserDetailsResult {
   timezone: string;
 
   @ApiProperty()
-  passport: string;
+  passport: PassportResult;
 
   @ApiProperty()
   preferredCurrency: string;

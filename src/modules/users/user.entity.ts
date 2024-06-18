@@ -19,6 +19,7 @@ import { City } from '../cities/city.entity';
 import { UserGender } from './enums/user.gender.enum';
 import { UserRole } from './enums/user.role.enum';
 import { FileDetailsDto } from '../filemanager/dto/file.dto';
+import { PassportEntity } from './passport.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -79,9 +80,6 @@ export class User extends BaseEntity {
   @Column({ length: 100, nullable: true, default: 'Europe/Moscow' })
   timezone: string;
 
-  @Column({ length: 50, nullable: true })
-  passport: string;
-
   @Column({ type: 'jsonb', nullable: true })
   avatar: FileDetailsDto;
 
@@ -114,6 +112,12 @@ export class User extends BaseEntity {
     default: UserRole.USER,
   })
   role: UserRole;
+
+  @Column({ name: 'passport_id', nullable: true })
+  passportId: number;
+
+  @OneToOne(() => PassportEntity)
+  passport: PassportEntity;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', name: 'last_login' })
   lastLogin: Date;

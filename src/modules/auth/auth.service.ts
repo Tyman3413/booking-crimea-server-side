@@ -63,7 +63,9 @@ export class AuthService {
         password: hashedPassword,
         role: user.role,
       });
-      await this.emailsService.sendMessageUserRegistered(newUser);
+      this.emailsService.sendMessageUserRegistered(newUser).catch((error) => {
+        console.log(error);
+      });
       const payload = this.getJwtPayload(newUser);
       return {
         access_token: this.jwtService.sign(payload),
