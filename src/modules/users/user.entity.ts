@@ -117,6 +117,7 @@ export class User extends BaseEntity {
   passportId: number;
 
   @OneToOne(() => PassportEntity)
+  @JoinColumn({ name: 'passport_id' })
   passport: PassportEntity;
 
   @UpdateDateColumn({ type: 'timestamp with time zone', name: 'last_login' })
