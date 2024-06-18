@@ -25,6 +25,7 @@ export class UsersService {
   }
 
   async updateProfile(user: User, data: UpdateProfileDto): Promise<User> {
+    let newPassport: PassportEntity = null;
     if (data.passport) {
       if (!user.passport) {
         const passport = new PassportEntity();
@@ -42,7 +43,7 @@ export class UsersService {
         passport.month = data.passport.month ? data.passport.month : null;
         passport.year = data.passport.year ? data.passport.year : null;
         passport.user = user;
-        await this.passportRepository.save(passport);
+        newPassport = await this.passportRepository.save(passport);
         const landlord = await this.landlordsService.getByUser(user.id);
         if (!landlord) {
           await this.landlordsService.createByUser(user);
@@ -88,6 +89,9 @@ export class UsersService {
     }
     if (data.zipcode) {
       existingUser.zipcode = data.zipcode;
+    }
+    if (newPassport) {
+      existingUser.passport = newPassport;
     }
     await this.repository.save(existingUser);
     return await this.findOneByEmail(user.email);
