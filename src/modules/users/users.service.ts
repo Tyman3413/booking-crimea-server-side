@@ -41,6 +41,7 @@ export class UsersService {
         passport.day = data.passport.day ? data.passport.day : null;
         passport.month = data.passport.month ? data.passport.month : null;
         passport.year = data.passport.year ? data.passport.year : null;
+        passport.user = user;
         await this.passportRepository.save(passport);
         const landlord = await this.landlordsService.getByUser(user.id);
         if (!landlord) {
@@ -116,7 +117,7 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<User> {
     return this.repository.findOne({
       where: { email: email },
-      relations: { country: true },
+      relations: { country: true, passport: true },
     });
   }
 
