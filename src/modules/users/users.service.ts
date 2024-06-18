@@ -22,7 +22,7 @@ export class UsersService {
   }
 
   async updateProfile(user: User, data: UpdateProfileDto): Promise<User> {
-    if (data.passport) {
+    if (data.passport && !user.passport) {
       await this.landlordsService.createByUser(user);
       if (user.role !== UserRole.ADMIN) {
         user.role = UserRole.LANDLORD;
