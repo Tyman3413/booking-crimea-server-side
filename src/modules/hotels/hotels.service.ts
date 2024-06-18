@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Hotel } from './hotel.entity';
-import { In, Not, Repository } from 'typeorm';
+import { In, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { HotelListResult } from './hotel.list.result';
 import { HotelDetailsResult } from './dto/hotel.details.result';
 import { ReviewsService } from '../reviews/reviews.service';
@@ -342,10 +342,13 @@ export class HotelsService {
       checkInDate,
       checkOutDate,
     );
+    console.log(conflictingOrders);
 
     const occupiedRoomIds = conflictingOrders.flatMap((order) =>
       order.rooms.map((room) => room.id),
     );
+
+    console.log(occupiedRoomIds);
 
     const order: { [key: string]: 'ASC' | 'DESC' } = {};
     if (sort === 'popularity') {
@@ -357,10 +360,13 @@ export class HotelsService {
     const where: any = {
       cityId,
       rooms: {
-        places: guests,
-        id: occupiedRoomIds.length > 0 ? Not(In(occupiedRoomIds)) : undefined,
+        places: MoreThanOrEqual(guests),
       },
     };
+    if (occupiedRoomIds.length > 0) {
+      where.rooms.id = Not(In(occupiedRoomIds));
+    }
+    console.log(where);
 
     const [hotels, total] = await this.repository.findAndCount({
       where: where,
@@ -375,6 +381,8 @@ export class HotelsService {
       skip: skip,
       take: limit,
     });
+
+    console.log(hotels);
 
     const result = hotels.map(async (hotel) => ({
       id: hotel.id,
