@@ -22,7 +22,7 @@ import { HotelDetailsResult } from './dto/hotel.details.result';
 import { FindAvailableHotelsDto } from './dto/find.available.hotels.dto';
 import { CreateHotelDto } from './dto/create.hotel.dto';
 import { CurrentUser } from '../users/decorators/user.decorator';
-import { isLandlord, UserPayload } from '../auth/dto/user.payload';
+import { isAdmin, isLandlord, UserPayload } from '../auth/dto/user.payload';
 import { AuthGuard } from '@nestjs/passport';
 import { Hotel } from './hotel.entity';
 import { Public } from '../common/decorators/public.decorator';
@@ -44,7 +44,7 @@ export class HotelsController {
     @CurrentUser() user: UserPayload,
     @Body() dto: CreateHotelDto,
   ): Promise<Hotel> {
-    if (isLandlord(user)) {
+    if (isLandlord(user) || isAdmin(user)) {
       return await this.hotelsService.create(user, dto);
     } else {
       throw new AccessRightsException();
