@@ -7,12 +7,15 @@ import { UpdateProfileDto } from './dto/update.profile.dto';
 import { UserDetailsResult } from './dto/user.details.result';
 import { LandlordsService } from '../landlords/landlords.service';
 import { UserRole } from './enums/user.role.enum';
+import { PassportEntity } from './passport.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly repository: Repository<User>,
+    @InjectRepository(PassportEntity)
+    private readonly passportRepository: Repository<PassportEntity>,
     private readonly landlordsService: LandlordsService,
   ) {}
 
@@ -22,15 +25,70 @@ export class UsersService {
   }
 
   async updateProfile(user: User, data: UpdateProfileDto): Promise<User> {
-    if (data.passport && !user.passport) {
-      await this.landlordsService.createByUser(user);
-      if (user.role !== UserRole.ADMIN) {
-        user.role = UserRole.LANDLORD;
+    if (data.passport) {
+      if (!user.passport) {
+        const passport = new PassportEntity();
+        passport.lastName = data.passport.lastName
+          ? data.passport.lastName
+          : null;
+        passport.firstName = data.passport.firstName
+          ? data.passport.firstName
+          : null;
+        passport.country = data.passport.country ? data.passport.country : null;
+        passport.serialNumber = data.passport.serialNumber
+          ? data.passport.serialNumber
+          : null;
+        passport.day = data.passport.day ? data.passport.day : null;
+        passport.month = data.passport.month ? data.passport.month : null;
+        passport.year = data.passport.year ? data.passport.year : null;
+        await this.passportRepository.save(passport);
+        const landlord = await this.landlordsService.getByUser(user.id);
+        if (!landlord) {
+          await this.landlordsService.createByUser(user);
+        }
+
+        if (user.role !== UserRole.ADMIN) {
+          user.role = UserRole.LANDLORD;
+        } else {
+          user.role = user.role;
+        }
       } else {
-        user.role = user.role;
+        user.passport.lastName =
+          data.passport.lastName || user.passport.lastName;
+        user.passport.firstName =
+          data.passport.firstName || user.passport.firstName;
+        user.passport.country = data.passport.country || user.passport.country;
+        user.passport.serialNumber =
+          data.passport.serialNumber || user.passport.serialNumber;
+        user.passport.day = data.passport.day || user.passport.day;
+        user.passport.month = data.passport.month || user.passport.month;
+        user.passport.year = data.passport.year || user.passport.year;
+        await this.passportRepository.save(user.passport);
       }
     }
-    await this.repository.update(user.id, { ...data, role: user.role });
+    const existingUser = await this.findOneByEmail(user.email);
+    if (data.lastName) {
+      existingUser.lastName = data.lastName;
+    }
+    if (data.nickname) {
+      existingUser.nickname = data.nickname;
+    }
+    if (data.birthday) {
+      existingUser.birthday = data.birthday;
+    }
+    if (data.gender) {
+      existingUser.gender = data.gender;
+    }
+    if (data.phone) {
+      existingUser.phone = data.phone;
+    }
+    if (data.address) {
+      existingUser.address = data.address;
+    }
+    if (data.zipcode) {
+      existingUser.zipcode = data.zipcode;
+    }
+    await this.repository.save(existingUser);
     return await this.findOneByEmail(user.email);
   }
 
