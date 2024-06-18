@@ -10,7 +10,7 @@ import { EmailsService } from './emails.service';
     MailerModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         transport: {
-          host: 'smtp.yandex.ru',
+          host: 'smtp.mail.ru',
           port: 465,
           tls: {
             rejectUnauthorized: false,
@@ -21,7 +21,7 @@ import { EmailsService } from './emails.service';
           },
         },
         defaults: {
-          from: '"BookingLounge" <booking-crimea@gmail.com>',
+          from: '"BookingLounge" <tyman3413@mail.ru>',
         },
         template: {
           dir: path.join(__dirname, '../../resources/templates/emails'),

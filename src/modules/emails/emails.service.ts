@@ -40,7 +40,9 @@ export class EmailsService {
       context: {
         fullName:
           `${order.lastName || ''}` +
+          ' ' +
           `${order.firstName || ''}` +
+          ' ' +
           `${order.patronymic || ''}`,
         room: order.rooms[0].title,
         hotel: order.hotel.name,
