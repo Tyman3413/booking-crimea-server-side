@@ -130,6 +130,7 @@ export class OrdersService {
     try {
       const savedOrder = await queryRunner.manager.save(newOrder);
       await queryRunner.commitTransaction();
+      await this.emailsService.sendMessageOrderSuccess(newOrder);
       return savedOrder;
     } catch (error) {
       await queryRunner.rollbackTransaction();
