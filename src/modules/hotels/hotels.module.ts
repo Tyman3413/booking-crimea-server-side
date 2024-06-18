@@ -10,6 +10,7 @@ import { OrdersModule } from '../orders/orders.module';
 import { ConveniencesModule } from '../conveniences/conveniences.module';
 import { HotelsService } from './hotels.service';
 import { BookmarksModule } from '../bookmarks/bookmarks.module';
+import { LandlordsModule } from '../landlords/landlords.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { BookmarksModule } from '../bookmarks/bookmarks.module';
     forwardRef(() => ConveniencesModule),
     forwardRef(() => CategoriesModule),
     forwardRef(() => BookmarksModule),
+    forwardRef(() => LandlordsModule),
   ],
   controllers: [HotelsController],
   providers: [HotelsService],
