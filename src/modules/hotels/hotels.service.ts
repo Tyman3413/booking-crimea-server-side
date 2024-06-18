@@ -73,7 +73,7 @@ export class HotelsService {
     }
 
     const result = this.repository.create(hotel);
-    return await this.repository.save(result);
+    await this.repository.save(result);
   }
 
   async update(
