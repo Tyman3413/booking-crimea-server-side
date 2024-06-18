@@ -21,4 +21,13 @@ export class LandlordsService {
     landlord.companyName = user.firstName;
     return await this.repository.save(landlord);
   }
+
+  async getByUser(userId: number): Promise<Landlord> {
+    return await this.repository.findOne({
+      where: { userId: userId },
+      relations: {
+        user: true,
+      },
+    });
+  }
 }

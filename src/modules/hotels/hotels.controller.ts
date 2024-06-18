@@ -125,6 +125,31 @@ export class HotelsController {
     );
   }
 
+  @ApiOperation({ summary: 'Получить объекты текущего пользователя' })
+  @ApiResponse({ type: HotelListResult, isArray: true, status: 200 })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sort', required: false, type: String })
+  @ApiQuery({ name: 'direction', required: false, type: String })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('my')
+  async getLandlordHotels(
+    @CurrentUser() user: UserPayload,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 8,
+    @Query('sort') sort: string = 'popularity',
+    @Query('direction') direction: string = 'DESC',
+  ): Promise<HotelListResult[]> {
+    return await this.hotelsService.getLandlordHotels(
+      user,
+      page,
+      limit,
+      sort,
+      direction,
+    );
+  }
+
   @ApiOperation({
     summary: 'Получить информацию об определенном отеле по его ID',
   })

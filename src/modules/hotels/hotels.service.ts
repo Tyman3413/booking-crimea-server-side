@@ -22,6 +22,7 @@ import { Convenience } from '../conveniences/convenience.entity';
 import { UserPayload } from '../auth/dto/user.payload';
 import { UpdateHotelDto } from './dto/update.hotel.dto';
 import { BookmarksService } from '../bookmarks/bookmarks.service';
+import { LandlordsService } from '../landlords/landlords.service';
 
 @Injectable()
 export class HotelsService {
@@ -38,6 +39,7 @@ export class HotelsService {
     private readonly conveniencesService: ConveniencesService,
     @Inject(forwardRef(() => BookmarksService))
     private readonly bookmarksService: BookmarksService,
+    private readonly landlordsService: LandlordsService,
   ) {}
 
   async create(user: UserPayload, body: CreateHotelDto) {
@@ -367,6 +369,61 @@ export class HotelsService {
         rooms: true,
         conveniences: true,
         orders: true,
+        hotelImages: true,
+      },
+      order: order,
+      skip: skip,
+      take: limit,
+    });
+
+    const result = hotels.map(async (hotel) => ({
+      id: hotel.id,
+      name: hotel.name,
+      address: hotel.address,
+      img: hotel.image,
+      tempImages: hotel.hotelImages,
+      rooms: hotel.rooms.length,
+      totalPlaces: await this.countTotalPlaces(hotel.id),
+      conveniences: hotel.conveniences,
+      cheapestPrice: hotel.cheapestPrice,
+      availableHotels: hotels.length,
+      totalHotels: total,
+    }));
+
+    return Promise.all(result);
+  }
+
+  async getLandlordHotels(
+    user: UserPayload,
+    page: number,
+    limit: number,
+    sort: string,
+    direction: string,
+  ): Promise<HotelListResult[]> {
+    const skip = limit * (page - 1);
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+
+    if (sort === 'popularity') {
+      order['rating'] = direction as 'ASC' | 'DESC';
+    } else if (sort === 'name') {
+      order['name'] = direction as 'ASC' | 'DESC';
+    }
+
+    const landlord = await this.landlordsService.getByUser(user.id);
+    if (!landlord) {
+      throw new NotFoundException('Вы не арендодатель');
+    }
+
+    const where: any = {
+      landlordId: landlord.id,
+    };
+
+    const [hotels, total] = await this.repository.findAndCount({
+      where: where,
+      relations: {
+        rooms: true,
+        conveniences: true,
+        landlord: true,
         hotelImages: true,
       },
       order: order,
