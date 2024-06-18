@@ -12,9 +12,7 @@ export class ConveniencesService {
   ) {}
 
   async findAll(user: UserPayload) {
-    return await this.repository.find({
-      where: { userId: user.id },
-    });
+    return await this.repository.find();
   }
 
   async findAllByIds(ids: number[]) {
