@@ -11,6 +11,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -27,6 +28,7 @@ import { Hotel } from './hotel.entity';
 import { Public } from '../common/decorators/public.decorator';
 import { AccessRightsException } from '../common/exceoptions/access.rights.exception';
 import { OptionalGuard } from '../auth/guards/optional.guard';
+import { UpdateHotelDto } from './dto/update.hotel.dto';
 
 @Controller('hotels')
 @ApiTags('Отели 🏨')
@@ -46,6 +48,22 @@ export class HotelsController {
       return await this.hotelsService.create(user, dto);
     } else {
       throw new AccessRightsException();
+    }
+  }
+
+  @ApiOperation({ summary: 'Обновление данных об отеле' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiParam({ name: 'id', required: true, type: Number })
+  @ApiBody({ type: UpdateHotelDto })
+  @Post('update/:id')
+  async updateAdvertisement(
+    @CurrentUser() user: UserPayload,
+    @Param('id') id: number,
+    @Body() dto: UpdateHotelDto,
+  ): Promise<Hotel> {
+    if (isLandlord(user)) {
+      return await this.hotelsService.update(id, user, dto);
     }
   }
 

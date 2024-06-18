@@ -43,11 +43,13 @@ export class HotelsService {
   ) {}
 
   async create(user: UserPayload, body: CreateHotelDto) {
+    const landlord = await this.landlordsService.getByUser(user.id);
     const hotel = new Hotel();
     hotel.name = body.name;
     hotel.address = body.address;
     hotel.cheapestPrice = body.price;
     hotel.description = body.description;
+    hotel.landlord = landlord;
 
     if (body.conveniences && body.conveniences.length > 0) {
       hotel.conveniences = await this.conveniencesService.findAllByIds(
